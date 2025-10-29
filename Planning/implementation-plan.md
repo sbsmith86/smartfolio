@@ -8,15 +8,22 @@
 
 ## Overview
 
-This implementation plan follows **Option 2: Document-Powered Smart Profiles (8-10 weeks)** from the technical design. The plan focuses on building a professional platform where users can upload documents (resume/PDF), connect their LinkedIn/GitHub profiles, manage testimonials, and provide an AI-powered chat interface for visitors.
+This implementation plan follows **Option 2: Document-Powered Smart Profiles (8-10 weeks)** from the technical design. The plan focuses on building a **candidate-centric platform** where professionals can consolidate all their career data (resumes, GitHub repos, LinkedIn profiles, project documentation, testimonials) into one intelligent, conversational profile that visitors can explore naturally.
 
-**Key Features:**
+**Core Conversational Features:**
+- **Multi-Source Data Integration**: Unified ingestion from resumes, GitHub, LinkedIn, project docs, and testimonials
+- **Intelligent Knowledge Graph**: AI connects relationships between projects, skills, experiences, and achievements
+- **Natural Conversation Interface**: Visitors can ask questions about your career and get contextual, detailed responses
+- **Adaptive Responses**: AI tailors explanations based on what visitors are trying to understand about your background
+
+**Key Technical Features:**
 - Email/password + Google OAuth authentication
 - Resume/PDF upload with text extraction and AI processing
-- LinkedIn/GitHub URL integration with basic verification
+- GitHub/LinkedIn integration for automatic profile data sync
+- Project documentation upload and processing
 - Testimonial management system with verification requests
-- Public chat interface with document-aware AI responses
-- Vector embeddings for intelligent context matching
+- Public chat interface for conversational career exploration
+- Vector embeddings for intelligent context matching and response generation
 
 ---
 
@@ -278,9 +285,25 @@ model ChatMessage {
 
 ## 1.2 Authentication System
 
-## Task 3: Implement NextAuth.js with email/password and Google OAuth
+## Task 3: Implement NextAuth.js with email/password and Google OAuth ✅ COMPLETE
 
-**Status:** Blocked on Task 2
+**Status:** Complete
+
+**Completed:** October 27, 2025
+
+**What was accomplished:**
+- ✅ Configured NextAuth.js with Prisma adapter for database storage
+- ✅ Implemented email/password authentication with bcrypt password hashing
+- ✅ Set up Google OAuth provider with proper client credentials
+- ✅ Created complete signin page (`/src/app/auth/signin/page.tsx`) with both auth methods
+- ✅ Created complete signup page (`/src/app/auth/signup/page.tsx`) with validation
+- ✅ Built signup API endpoint (`/src/app/api/auth/signup/route.ts`) with user creation
+- ✅ Implemented session management with JWT strategy
+- ✅ Added custom NextAuth callbacks for user data handling
+- ✅ Created protected dashboard page with session verification
+- ✅ Set up SessionProvider integration in app layout
+- ✅ Added proper TypeScript definitions for NextAuth
+- ✅ Functional testing confirmed: both email/password and Google OAuth working
 
 **Dependencies:**
 - Task 2: Database schema setup
@@ -480,6 +503,423 @@ export default function SignIn() {
 
 ---
 
+## Task 4: Redesign all UI pages to align with candidate-centric product vision ✅ COMPLETE
+
+**Status:** Complete
+
+**Completed:** October 28, 2025
+
+**What was accomplished:**
+- ✅ Redesigned homepage with candidate-centric messaging and conversational examples
+- ✅ Added Agentic Postgres branding and technical differentiators throughout
+- ✅ Updated authentication pages (Sign Up/Sign In) with unified professional data vision
+- ✅ Enhanced dashboard as central hub for data consolidation and sharing
+- ✅ Applied consistent blue/purple gradient design language
+- ✅ Added live conversation examples and interactive elements
+- ✅ Emphasized "professional story" messaging over employer-focused approach
+- ✅ Integrated Agentic Postgres/Tiger MCP highlights throughout user experience
+- ✅ Created mobile-responsive design optimized for professional sharing
+
+**Dependencies:**
+- Task 3: Authentication system
+
+**Deliverables:**
+- Redesigned homepage emphasizing conversational career stories
+- Updated authentication pages reflecting unified professional data vision
+- Enhanced dashboard showcasing data consolidation and sharing capabilities
+- Visual emphasis on agentic Postgres-powered features
+
+---
+
+### 🎨 C.R.A.F.T.E.D Prompt
+
+### Context
+
+You're redesigning **SmartFolio's user interface** to align with the refined product vision: a candidate-centric platform where professionals consolidate all their career data (resumes, GitHub repos, LinkedIn profiles, project documentation, testimonials) into one intelligent, conversational profile. The current UI was designed with an employer-focused approach, but now needs to emphasize the candidate journey of creating unified, explorable professional stories.
+
+The redesign must showcase how **Agentic Postgres (Tiger MCP)** powers the platform's unique capabilities, making the technical differentiators visible and compelling to users who want to understand why SmartFolio is superior to scattered traditional profiles.
+
+### Role
+
+You are a **full-stack developer and UX designer** creating a cohesive user experience that clearly communicates SmartFolio's value proposition while showcasing the technical sophistication of Agentic Postgres integration throughout the user journey.
+
+### Action
+
+**Redesign** the following key pages with candidate-centric messaging and Agentic Postgres integration highlights:
+
+1. **Homepage (/)** - Transform from employer-focused landing to candidate journey showcase
+2. **Sign Up (/auth/signup)** - Emphasize the value of consolidating professional data
+3. **Sign In (/auth/signin)** - Welcome back messaging for unified profile management
+4. **Dashboard (/dashboard)** - Central hub for data consolidation and sharing
+
+### Format
+
+**Homepage Redesign:**
+```typescript
+// src/app/page.tsx - Candidate-Centric Landing Page
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  FileText, Github, Linkedin, MessageSquare, Zap, Database,
+  ArrowRight, CheckCircle, Sparkles, BrainCircuit, Users
+} from "lucide-react";
+
+export default function Home() {
+  const { status } = useSession();
+  const router = useRouter();
+  const [currentExample, setCurrentExample] = useState(0);
+
+  const conversationExamples = [
+    "Tell me about Sarah's experience with distributed systems",
+    "What machine learning projects has John worked on?",
+    "How did Maria lead her team through the product redesign?",
+    "What frameworks does Alex prefer for backend development?"
+  ];
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentExample((prev) => (prev + 1) % conversationExamples.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your professional story...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-md border-b border-blue-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                  <BrainCircuit className="h-6 w-6 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse border-2 border-white"></div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  SmartFolio
+                </h1>
+                <p className="text-xs text-gray-500">Powered by Agentic Postgres</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link href="/auth/signin">
+                <Button variant="ghost" className="text-gray-700 hover:text-blue-600">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                  Create Your Story
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-16">
+          <Badge className="mb-6 bg-blue-100 text-blue-800 border-blue-200">
+            <Sparkles className="h-3 w-3 mr-1" />
+            Your Complete Professional Story, Conversationally
+          </Badge>
+
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            Stop Scattering Your
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {" "}Career Story
+            </span>
+          </h1>
+
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Upload your resume, connect GitHub & LinkedIn, add project docs and testimonials.
+            SmartFolio creates one intelligent profile where people can explore your professional
+            journey through natural conversation.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/auth/signup">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3">
+                <FileText className="mr-2 h-5 w-5" />
+                Create Your SmartFolio
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50 px-8 py-3">
+              <MessageSquare className="mr-2 h-5 w-5" />
+              See Example Conversation
+            </Button>
+          </div>
+
+          {/* Live Conversation Example */}
+          <Card className="max-w-2xl mx-auto border-blue-200 bg-gradient-to-br from-blue-50 to-white">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg text-blue-900 flex items-center justify-center">
+                <MessageSquare className="h-5 w-5 mr-2" />
+                Instead of scanning static profiles, visitors ask:
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-white rounded-lg p-4 border border-blue-100 min-h-[60px] flex items-center justify-center">
+                <p className="text-gray-800 font-medium text-lg transition-all duration-500">
+                  "{conversationExamples[currentExample]}"
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Data Sources Section */}
+      <section className="bg-white/50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Unify All Your Professional Data
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              SmartFolio intelligently connects information from all your sources into one conversational experience
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            {[
+              { icon: FileText, label: "Resumes & CVs", color: "bg-red-100 text-red-600" },
+              { icon: Github, label: "GitHub Repos", color: "bg-gray-100 text-gray-700" },
+              { icon: Linkedin, label: "LinkedIn Profile", color: "bg-blue-100 text-blue-600" },
+              { icon: Users, label: "Testimonials", color: "bg-green-100 text-green-600" }
+            ].map((source, index) => (
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <CardContent className="pt-6">
+                  <div className={`w-12 h-12 ${source.color} rounded-lg flex items-center justify-center mx-auto mb-3`}>
+                    <source.icon className="h-6 w-6" />
+                  </div>
+                  <p className="font-medium text-gray-900">{source.label}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Agentic Postgres Highlight */}
+          <Card className="bg-gradient-to-r from-purple-100 to-blue-100 border-purple-200">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-center mb-4">
+                <Database className="h-8 w-8 text-purple-600 mr-3" />
+                <h3 className="text-2xl font-bold text-purple-900">Powered by Agentic Postgres</h3>
+                <Zap className="h-6 w-6 text-yellow-500 ml-2" />
+              </div>
+              <p className="text-center text-purple-800 text-lg mb-6 max-w-3xl mx-auto">
+                Tiger MCP enables direct AI-to-database communication, creating intelligent connections
+                between your projects, skills, and experiences for contextually perfect responses.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="bg-white rounded-lg p-4 mb-2">
+                    <BrainCircuit className="h-8 w-8 text-purple-600 mx-auto" />
+                  </div>
+                  <p className="font-semibold text-purple-900">Smart Connections</p>
+                  <p className="text-sm text-purple-700">AI understands relationships in your data</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white rounded-lg p-4 mb-2">
+                    <Zap className="h-8 w-8 text-yellow-600 mx-auto" />
+                  </div>
+                  <p className="font-semibold text-purple-900">Instant Responses</p>
+                  <p className="text-sm text-purple-700">Sub-second query processing</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white rounded-lg p-4 mb-2">
+                    <Sparkles className="h-8 w-8 text-blue-600 mx-auto" />
+                  </div>
+                  <p className="font-semibold text-purple-900">Contextual Intelligence</p>
+                  <p className="text-sm text-purple-700">Responses adapt to visitor interest</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                Your Professional Story,
+                <span className="text-blue-600"> Intelligently Connected</span>
+              </h2>
+              <div className="space-y-4">
+                {[
+                  "Stop updating profiles across multiple platforms",
+                  "Let visitors explore your experience conversationally",
+                  "AI connects your projects, skills, and achievements",
+                  "Share one link instead of scattered information",
+                  "Get insights on how people discover your expertise"
+                ].map((benefit, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <CheckCircle className="h-6 w-6 text-green-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-gray-700 font-medium">{benefit}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                    <span>Visitor exploring your profile</span>
+                  </div>
+
+                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="space-y-3">
+                      <div className="flex justify-end">
+                        <div className="bg-blue-500 text-white px-4 py-2 rounded-lg rounded-br-sm max-w-xs">
+                          What experience does Sarah have with React?
+                        </div>
+                      </div>
+                      <div className="flex justify-start">
+                        <div className="bg-gray-100 px-4 py-2 rounded-lg rounded-bl-sm max-w-sm">
+                          Sarah has extensive React experience! She built the frontend for EcoTrack
+                          (2023) using React 18 with TypeScript, led the migration of LegalFlow's
+                          interface from Vue to React (2022), and contributed to several open-source
+                          React components. Would you like details about any specific project?
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-sm text-blue-600 font-medium text-center">
+                    <Sparkles className="h-4 w-4 inline mr-1" />
+                    Powered by intelligent data connections
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-20">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-white mb-6">
+            Ready to Create Your Conversational Profile?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join professionals who are making their career stories more discoverable and engaging
+            through intelligent conversation.
+          </p>
+          <Link href="/auth/signup">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 font-semibold">
+              <FileText className="mr-2 h-5 w-5" />
+              Start Building Your SmartFolio
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-3 mb-4 md:mb-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <BrainCircuit className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <p className="font-bold">SmartFolio</p>
+                <p className="text-xs text-gray-400">Powered by Agentic Postgres</p>
+              </div>
+            </div>
+            <p className="text-gray-400 text-sm">
+              © 2025 SmartFolio. Your professional story, intelligently connected.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+```
+
+### Tone
+
+Create a **warm, professional, and empowering** user experience that makes candidates feel excited about consolidating their professional story. The design should feel modern and trustworthy while clearly communicating the technical sophistication of Agentic Postgres without being overly technical.
+
+### Examples
+
+**Key Design Principles:**
+1. **Candidate Journey Focus**: Every page emphasizes the user's journey of creating a unified professional story
+2. **Agentic Postgres Integration**: Subtle but clear references to the technical differentiators
+3. **Conversational Emphasis**: UI elements that show the chat/conversation aspect
+4. **Data Consolidation**: Visual representation of bringing scattered data together
+5. **Professional but Approachable**: Clean design that feels both sophisticated and welcoming
+
+**Authentication Pages**:
+- Sign up emphasizes "Create Your Professional Story"
+- Sign in welcomes back to "Your Unified Profile"
+- Both highlight the value of data consolidation
+
+**Dashboard Redesign**:
+- Central hub showing connected data sources
+- Chat interface prominence
+- Sharing and analytics features
+- Clear Agentic Postgres benefits
+
+### Deliverables
+
+1. ✅ Redesigned homepage with candidate-centric messaging and Agentic Postgres highlights
+2. ✅ Updated authentication pages reflecting unified professional data vision
+3. ✅ Enhanced dashboard as central hub for data consolidation and sharing
+4. ✅ Consistent design language emphasizing conversational career exploration
+5. ✅ Visual integration of Agentic Postgres technical differentiators
+6. ✅ Mobile-responsive design optimized for professional sharing
+
+---
+
+### ✅ Success Criteria
+
+- [ ] Homepage clearly communicates candidate value proposition with conversational examples
+- [ ] Authentication flow emphasizes professional data unification benefits
+- [ ] Dashboard serves as effective hub for data management and sharing
+- [ ] Agentic Postgres features are prominently but tastefully highlighted
+- [ ] UI design is consistent, modern, and professionally appealing
+- [ ] Mobile experience works seamlessly for profile sharing
+- [ ] User testing shows improved understanding of SmartFolio's unique value
+
+---
+
 # Phase 2: Core Profile Building
 
 **Target Completion:** Week 5
@@ -489,12 +929,12 @@ export default function SignIn() {
 
 ## 2.1 Document Upload & Processing
 
-## Task 4: Implement file upload with document processing
+## Task 6: Implement file upload with document processing
 
-**Status:** Blocked on Task 3
+**Status:** Blocked on Task 4
 
 **Dependencies:**
-- Task 3: Authentication system
+- Task 4: UI redesign alignment
 
 **Deliverables:**
 - File upload component for PDF/DOCX files
@@ -885,12 +1325,12 @@ export async function processResumeWithAI(text: string) {
 
 ---
 
-## Task 5: Create profile management interface
+## Task 7: Create profile management interface
 
-**Status:** Blocked on Task 4
+**Status:** Blocked on Task 6
 
 **Dependencies:**
-- Task 4: Document upload system
+- Task 6: Document upload system
 
 **Deliverables:**
 - Profile editing form with all user fields
@@ -1130,12 +1570,12 @@ export default function ProfilePage() {
 
 ## 2.2 Links & Testimonials
 
-## Task 6: Implement LinkedIn/GitHub URL management
+## Task 8: Implement LinkedIn/GitHub URL management
 
-**Status:** Blocked on Task 5
+**Status:** Blocked on Task 7
 
 **Dependencies:**
-- Task 5: Profile management interface
+- Task 7: Profile management interface
 
 **Deliverables:**
 - Links management interface
@@ -1151,12 +1591,12 @@ export default function ProfilePage() {
 
 ---
 
-## Task 7: Create testimonial management system
+## Task 9: Create testimonial management system
 
-**Status:** Blocked on Task 6
+**Status:** Blocked on Task 8
 
 **Dependencies:**
-- Task 6: Links management
+- Task 8: Links management
 
 **Deliverables:**
 - Testimonial creation and editing interface
@@ -1179,43 +1619,134 @@ export default function ProfilePage() {
 
 ---
 
-## 3.1 Vector Embeddings & Search
+## 3.1 Intent Recognition & Vector Embeddings
 
-## Task 8: Implement vector embeddings for profile content
+## Task 10: Implement intent-based vector embeddings and search
 
-**Status:** Blocked on Task 7
+**Status:** Blocked on Task 9
 
 **Dependencies:**
-- Task 7: Testimonial system
+- Task 9: Testimonial system
 
 **Deliverables:**
-- Generate embeddings for all profile content
-- Store embeddings in database with metadata
-- Update embeddings when profile content changes
-- Similarity search functionality
+- Intent classification system for employer queries
+- Context-aware vector embeddings for profile content
+- Intent-adaptive search and matching algorithms
+- Real-time intent analysis and response optimization
+
+**Intent Recognition Implementation:**
+
+```typescript
+// src/lib/intentAnalysis.ts
+import OpenAI from 'openai';
+import { env } from '@/lib/env';
+
+const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
+
+export interface IntentAnalysis {
+  primaryIntent: 'technical_assessment' | 'culture_fit' | 'leadership_evaluation' | 'project_specific' | 'general_inquiry';
+  confidence: number;
+  keyRequirements: string[];
+  contextualDepth: 'surface' | 'detailed' | 'expert';
+  followUpLikelihood: number;
+}
+
+export async function analyzeQueryIntent(query: string, conversationHistory: string[] = []): Promise<IntentAnalysis> {
+  const prompt = `
+Analyze this employer query to understand their hiring intent:
+
+Query: "${query}"
+Previous questions: ${conversationHistory.join(', ')}
+
+Return JSON with:
+{
+  "primaryIntent": "technical_assessment|culture_fit|leadership_evaluation|project_specific|general_inquiry",
+  "confidence": 0.0-1.0,
+  "keyRequirements": ["requirement1", "requirement2"],
+  "contextualDepth": "surface|detailed|expert",
+  "followUpLikelihood": 0.0-1.0
+}
+  `;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.1,
+  });
+
+  return JSON.parse(response.choices[0].message.content || '{}');
+}
+```
+
+**Intent-Adaptive Profile Responses:**
+
+```typescript
+// src/lib/intentAdaptiveProfiles.ts
+export async function generateIntentAdaptiveResponse(
+  userProfile: any,
+  query: string,
+  intentAnalysis: IntentAnalysis
+): Promise<string> {
+  // Prioritize profile information based on intent
+  let focusAreas: string[] = [];
+
+  switch (intentAnalysis.primaryIntent) {
+    case 'technical_assessment':
+      focusAreas = ['skills', 'projects', 'technical_experience'];
+      break;
+    case 'culture_fit':
+      focusAreas = ['testimonials', 'team_experience', 'values'];
+      break;
+    case 'leadership_evaluation':
+      focusAreas = ['management_experience', 'team_building', 'strategic_thinking'];
+      break;
+    case 'project_specific':
+      focusAreas = ['relevant_projects', 'similar_challenges', 'outcomes'];
+      break;
+    default:
+      focusAreas = ['overview', 'key_highlights'];
+  }
+
+  // Generate contextually appropriate response depth
+  const responseDepth = intentAnalysis.contextualDepth === 'expert' ? 'comprehensive' :
+                       intentAnalysis.contextualDepth === 'detailed' ? 'moderate' : 'concise';
+
+  // Build response with intent-specific focus
+  return await buildContextualResponse(userProfile, query, focusAreas, responseDepth);
+}
+```
 
 **Success Criteria:**
-- Embeddings generated for documents, experience, skills
-- Embeddings update automatically on content changes
-- Similarity search returns relevant results
-- Performance is acceptable for real-time queries
+- Intent classification achieves >85% accuracy on test queries
+- Profile responses adapt appropriately to detected intent
+- Vector embeddings include intent-contextual metadata
+- Real-time intent analysis completes in <2 seconds
+- Intent learning improves match quality over time
 
 ---
 
-## 3.2 Public Chat Interface
+## 3.2 Intent-Aware Chat Interface
 
-## Task 9: Create public profile pages with chat interface
+## Task 11: Create intent-aware public profile pages with adaptive chat interface
 
-**Status:** Blocked on Task 8
+**Status:** Blocked on Task 10
 
 **Dependencies:**
-- Task 8: Vector embeddings system
+- Task 10: Intent-based vector embeddings system
 
 **Deliverables:**
-- Public profile page layout
-- Real-time chat interface
-- AI-powered responses using profile context
-- Anonymous visitor support
+- Intent-adaptive public profile page layout
+- Real-time chat interface with intent recognition
+- AI-powered responses that adapt to employer intent
+- Anonymous visitor support with intent tracking
+- Progressive intent learning and optimization
+
+**Intent-Aware Chat Features:**
+- **Query Intent Analysis**: Every employer question is analyzed for hiring intent and context
+- **Adaptive Information Prioritization**: Profile information dynamically reorders based on detected intent
+- **Progressive Disclosure**: Follow-up questions reveal deeper, more relevant information
+- **Intent Learning**: System learns from successful interactions to improve future matching
+- **Context Preservation**: Maintains intent context throughout the conversation session
 
 ---
 
@@ -1223,13 +1754,13 @@ export default function ProfilePage() {
 
 ### Context
 
-You're building **SmartFolio's public profile chat interface** - the core differentiating feature that allows visitors to have conversations about a person's professional background. This chat system uses AI with vector embeddings to provide intelligent, context-aware responses based on the user's uploaded documents, experience, skills, and testimonials.
+You're building **SmartFolio's intent-aware public profile chat interface** - the core differentiating feature that revolutionizes professional discovery by understanding employer intent and adapting responses accordingly. This chat system uses AI with vector embeddings and intent recognition to provide intelligent, contextually relevant responses that prioritize information based on what employers are truly looking for.
 
-The chat interface needs to be anonymous-friendly (no registration required), real-time, and provide accurate responses that feel like talking to the person themselves about their career.
+The chat interface needs to be anonymous-friendly (no registration required), real-time, and provide intent-adaptive responses that feel like having a focused conversation with the person about exactly what matters for the specific hiring context. The system learns from interaction patterns to continuously improve intent detection and response relevance.
 
 ### Role
 
-You are a **full-stack developer** creating an AI-powered chat interface that transforms static profiles into conversational experiences, using vector search to provide contextually relevant responses.
+You are a **full-stack developer** creating an intent-first AI-powered chat interface that transforms static profiles into adaptive conversational experiences, using advanced intent recognition and vector search to provide responses that align with employer hiring intent and context.
 
 ### Action
 
@@ -1240,13 +1771,14 @@ You are a **full-stack developer** creating an AI-powered chat interface that tr
 3. `src/app/api/chat/route.ts` - Chat API with AI integration
 4. `src/lib/chatAI.ts` - AI response generation with vector search
 
-**Specific Features:**
-1. Clean public profile layout with professional information
-2. Embedded chat interface for visitors
-3. AI responses using profile-specific context
-4. Real-time messaging with typing indicators
-5. Anonymous visitor support
-6. Context-aware responses from vector search
+**Specific Intent-Based Features:**
+1. Intent-adaptive public profile layout that prioritizes relevant information
+2. Embedded chat interface with real-time intent analysis
+3. AI responses that adapt to detected employer intent and context
+4. Progressive disclosure based on conversation depth and intent sophistication
+5. Anonymous visitor support with intent tracking and learning
+6. Context-aware responses from intent-enhanced vector search
+7. Intent-driven information prioritization and response optimization
 
 ### Format
 
@@ -1766,35 +2298,65 @@ export async function POST(request: NextRequest) {
 
 ## 4.1 Testing & Quality Assurance
 
-## Task 10: Write comprehensive tests
+## Task 12: Write comprehensive tests including intent-based validation
 
-**Status:** Blocked on Task 9
+**Status:** Blocked on Task 11
 
 **Dependencies:**
-- Task 9: Public chat interface
+- Task 11: Intent-aware chat interface
 
 **Deliverables:**
-- Unit tests for all core functionality
-- Integration tests for API endpoints
-- End-to-end tests for user workflows
-- Test fixtures and mocks
+- Unit tests for all core functionality including intent recognition
+- Integration tests for API endpoints and intent-adaptive responses
+- End-to-end tests for user workflows and intent-based scenarios
+- Intent classification accuracy testing with diverse query sets
+- A/B testing framework for intent-adaptive vs traditional responses
+
+**Intent-Specific Testing:**
+
+```typescript
+// src/tests/intent.test.ts
+describe('Intent Recognition System', () => {
+  test('correctly identifies technical assessment intent', async () => {
+    const query = "What frameworks has Sarah used for backend development?";
+    const intent = await analyzeQueryIntent(query);
+    expect(intent.primaryIntent).toBe('technical_assessment');
+    expect(intent.confidence).toBeGreaterThan(0.8);
+  });
+
+  test('adapts profile response based on culture fit intent', async () => {
+    const query = "How does John work with teams?";
+    const intent = await analyzeQueryIntent(query);
+    const response = await generateIntentAdaptiveResponse(mockProfile, query, intent);
+    expect(response).toContain('team collaboration');
+    expect(response).toContain('testimonials');
+  });
+
+  test('progressive disclosure works with follow-up questions', async () => {
+    const history = ["Tell me about Maria's experience", "What specific projects has she led?"];
+    const intent = await analyzeQueryIntent("Can you give me more technical details?", history);
+    expect(intent.contextualDepth).toBe('detailed');
+  });
+});
+```
 
 **Success Criteria:**
-- All core features have test coverage
-- Tests pass consistently
-- Critical user flows are tested end-to-end
-- Database operations are properly tested
+- All core features have test coverage including intent recognition (>90%)
+- Intent classification achieves >85% accuracy on diverse test queries
+- Intent-adaptive responses improve relevance by >40% vs generic responses
+- Critical user flows are tested end-to-end including intent scenarios
+- A/B testing shows measurable improvement in employer engagement
 
 ---
 
 ## 4.2 Deployment & Launch
 
-## Task 11: Deploy to production
+## Task 13: Deploy to production
 
-**Status:** Blocked on Task 10
+**Status:** Blocked on Task 12
 
 **Dependencies:**
-- Task 10: Testing suite
+- Task 12: Testing suite
 
 **Deliverables:**
 - Production deployment on Vercel/Railway
@@ -1810,12 +2372,12 @@ export async function POST(request: NextRequest) {
 
 ---
 
-## Task 12: Performance optimization and monitoring
+## Task 14: Performance optimization and monitoring
 
-**Status:** Blocked on Task 11
+**Status:** Blocked on Task 13
 
 **Dependencies:**
-- Task 11: Production deployment
+- Task 13: Production deployment
 
 **Deliverables:**
 - Performance monitoring setup
@@ -1834,42 +2396,59 @@ export async function POST(request: NextRequest) {
 # Success Metrics & Launch Criteria
 
 ## Technical Requirements
-- [ ] All 12 tasks completed successfully
-- [ ] Test coverage above 80% for core functionality
-- [ ] Performance benchmarks met
+- [ ] All 14 tasks completed successfully
+- [ ] Test coverage above 90% for core functionality including intent recognition
+- [ ] Performance benchmarks met (including <2s intent analysis)
 - [ ] Security review passed
 - [ ] Documentation complete
+
+## Intent-Based Performance Requirements
+- [ ] Intent classification achieves >85% accuracy on test query sets
+- [ ] Intent-adaptive responses show >40% improvement in relevance vs generic responses
+- [ ] Progressive disclosure depth correlates with employer engagement (>70% correlation)
+- [ ] Intent learning shows measurable improvement over time (>10% monthly accuracy gains)
+- [ ] Contextual response time under 3 seconds including intent analysis
 
 ## User Experience Requirements
 - [ ] User registration and login works flawlessly
 - [ ] Document upload and processing completes successfully
-- [ ] Public profiles display correctly
-- [ ] Chat interface provides helpful responses
-- [ ] Mobile experience is fully functional
+- [ ] Public profiles display correctly with intent-adaptive prioritization
+- [ ] Chat interface provides intent-aware, contextually relevant responses
+- [ ] Mobile experience is fully functional with intent recognition
+- [ ] Anonymous employers can discover relevant candidates through natural language queries
 
 ## Business Requirements
-- [ ] Platform supports 100+ users
-- [ ] AI responses are accurate and helpful
-- [ ] User profiles showcase professional information effectively
-- [ ] Chat interface demonstrates clear value proposition
-- [ ] Foundation ready for Option 3 features
+- [ ] Platform supports 100+ users with personalized intent learning
+- [ ] AI responses demonstrate clear intent understanding and adaptation
+- [ ] User profiles showcase professional information with smart prioritization
+- [ ] Chat interface demonstrates superior value vs static profile browsing
+- [ ] Intent-driven discovery shows measurable improvement in candidate-employer matching
+- [ ] Foundation ready for Option 3 features with robust intent architecture
 
 ---
 
 # Risk Mitigation
 
 ## High-Risk Areas
-1. **AI Response Quality** - Risk: Poor responses hurt user experience
-   - Mitigation: Extensive testing with diverse queries
-   - Fallback: Human-written response templates
+1. **Intent Recognition Accuracy** - Risk: Poor intent detection leads to irrelevant responses
+   - Mitigation: Extensive training data and continuous learning from user interactions
+   - Fallback: Generic response mode with option to refine query
 
-2. **Vector Search Performance** - Risk: Slow response times
-   - Mitigation: Database indexing and query optimization
-   - Fallback: Simpler keyword-based search
+2. **AI Response Quality & Intent Adaptation** - Risk: Responses don't align with detected intent
+   - Mitigation: Intent-specific response templates and comprehensive testing
+   - Fallback: Human-written response templates with intent tagging
 
-3. **File Processing Reliability** - Risk: Document parsing failures
+3. **Vector Search & Intent Performance** - Risk: Combined intent+vector search is too slow
+   - Mitigation: Database indexing, query optimization, and intent pre-computation
+   - Fallback: Simplified intent categories with faster matching
+
+4. **Intent Learning Complexity** - Risk: Intent learning system becomes too complex to maintain
+   - Mitigation: Start with simple intent categories, gradually add sophistication
+   - Fallback: Static intent classification without learning
+
+5. **File Processing Reliability** - Risk: Document parsing failures impact intent analysis
    - Mitigation: Multiple parsing libraries and error handling
-   - Fallback: Manual profile entry
+   - Fallback: Manual profile entry with intent-tagged information
 
 ## Timeline Risks
 - **Scope Creep**: Stick to Option 2 feature set

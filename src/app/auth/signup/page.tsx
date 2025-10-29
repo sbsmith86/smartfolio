@@ -86,18 +86,18 @@ export default function SignUp() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
-        <Card className="w-full max-w-md border-gray-800 bg-black/50 backdrop-blur-sm shadow-2xl">
-          <CardContent className="p-6 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-[#8B5CF6] to-purple-500">
-              <CheckCircle className="h-8 w-8 text-white" />
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4">
+        <Card className="w-full max-w-md border border-gray-200 bg-white shadow-xl">
+          <CardContent className="p-8 text-center">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 shadow-xl">
+              <CheckCircle className="h-10 w-10 text-white" />
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-white">Welcome to SmartFolio!</h2>
-            <p className="mb-4 text-gray-400">
-              Your account has been created successfully. Signing you in...
+            <h2 className="mb-4 text-3xl font-bold text-gray-800">Welcome to SmartFolio!</h2>
+            <p className="mb-6 text-gray-700 font-medium text-lg">
+              Your professional story starts here. Signing you in...
             </p>
             <div className="flex items-center justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-[#8B5CF6]" />
+              <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
             </div>
           </CardContent>
         </Card>
@@ -106,26 +106,26 @@ export default function SignUp() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4">
+      <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#8B5CF6] to-purple-400 bg-clip-text text-transparent">
-            Join SmartFolio
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+            Create Your Professional Story
           </h1>
-          <p className="mt-2 text-gray-400">
-            Create your intelligent professional profile
+          <p className="mt-4 text-gray-700 font-medium text-lg">
+            Unify your career data into one conversational profile
           </p>
         </div>
 
-        <Card className="border-gray-800 bg-black/50 backdrop-blur-sm shadow-2xl">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-white">
-              Create Account
+        <Card className="border border-gray-200 bg-white shadow-xl">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl text-center text-gray-800 font-bold">
+              Start Your SmartFolio Journey
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <div className="flex items-center space-x-2 rounded-md border border-red-700 bg-red-900/20 p-3 text-red-400">
+              <div className="flex items-center space-x-2 rounded-md border border-red-200 bg-red-50 p-3 text-red-700">
                 <AlertCircle className="h-4 w-4" />
                 <span className="text-sm">{error}</span>
               </div>
@@ -133,7 +133,7 @@ export default function SignUp() {
 
             <form onSubmit={handleSignUp} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-gray-300">
+                <Label htmlFor="name" className="text-gray-700">
                   Full Name
                 </Label>
                 <Input
@@ -143,12 +143,12 @@ export default function SignUp() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="bg-gray-900/50 border-gray-700 text-white placeholder-gray-500 focus:border-[#8B5CF6] focus:ring-[#8B5CF6]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">
+                <Label htmlFor="email" className="text-gray-700">
                   Email
                 </Label>
                 <Input
@@ -158,12 +158,12 @@ export default function SignUp() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-gray-900/50 border-gray-700 text-white placeholder-gray-500 focus:border-[#8B5CF6] focus:ring-[#8B5CF6]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">
+                <Label htmlFor="password" className="text-gray-700">
                   Password
                 </Label>
                 <Input
@@ -173,12 +173,12 @@ export default function SignUp() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-gray-900/50 border-gray-700 text-white placeholder-gray-500 focus:border-[#8B5CF6] focus:ring-[#8B5CF6]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-gray-300">
+                <Label htmlFor="confirmPassword" className="text-gray-700">
                   Confirm Password
                 </Label>
                 <Input
@@ -188,14 +188,14 @@ export default function SignUp() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="bg-gray-900/50 border-gray-700 text-white placeholder-gray-500 focus:border-[#8B5CF6] focus:ring-[#8B5CF6]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-[#8B5CF6] to-purple-500 hover:from-[#8B5CF6]/90 hover:to-purple-500/90 text-white font-semibold shadow-lg shadow-[#8B5CF6]/25 hover:shadow-[#8B5CF6]/40 transition-all duration-300"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-lg shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transform hover:scale-105 transition-all duration-300"
               >
                 {loading ? (
                   <>
@@ -203,24 +203,24 @@ export default function SignUp() {
                     Creating Account...
                   </>
                 ) : (
-                  "Create Account"
+                  "Create Your SmartFolio"
                 )}
               </Button>
             </form>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-700" />
+                <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black px-2 text-gray-400">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">Or continue with</span>
               </div>
             </div>
 
             <Button
               onClick={handleGoogleSignIn}
               variant="outline"
-              className="w-full border-gray-700 bg-transparent text-white hover:bg-gray-800 hover:border-gray-600 transition-all duration-300"
+              className="w-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium text-lg transition-all duration-300"
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -243,11 +243,11 @@ export default function SignUp() {
               Continue with Google
             </Button>
 
-            <div className="text-center text-sm text-gray-400">
+            <div className="text-center text-lg text-gray-700">
               Already have an account?{" "}
               <Link
                 href="/auth/signin"
-                className="text-[#8B5CF6] hover:text-purple-400 font-medium transition-colors duration-200"
+                className="text-amber-600 hover:text-orange-600 font-semibold transition-colors duration-200"
               >
                 Sign in here
               </Link>

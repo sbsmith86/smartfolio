@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, User, FileText, Link, MessageSquare, LogOut } from "lucide-react";
+import { Loader2, User, FileText, Link, MessageSquare, LogOut, BrainCircuit, Database, Sparkles, Github, Linkedin, Users } from "lucide-react";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -37,21 +37,33 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/90 backdrop-blur-md shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">SmartFolio</h1>
-              <span className="text-gray-500">Dashboard</span>
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <BrainCircuit className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse border-2 border-white"></div>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">SmartFolio</h1>
+                  <p className="text-sm text-gray-700 font-medium">Powered by Agentic Postgres</p>
+                </div>
+              </div>
+              <span className="text-gray-400 text-2xl font-medium">•</span>
+              <span className="text-gray-800 font-semibold text-xl">Your Professional Story</span>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <User className="h-5 w-5 text-gray-500" />
                 <span className="text-gray-700">{session.user?.name}</span>
               </div>
-              <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <Button variant="outline" onClick={handleSignOut} className="border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium px-6 py-2">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
@@ -64,121 +76,167 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Welcome Section */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome to SmartFolio, {session.user?.name?.split(" ")[0]}! �
-            </h2>
-            <p className="text-gray-600">
-              Transform your career documents into an intelligent, discoverable professional profile. Employers will find you through conversational search.
+          <div className="bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100 rounded-2xl shadow-xl border border-amber-200 p-8">
+            <div className="flex items-center mb-6">
+              <Sparkles className="h-8 w-8 text-yellow-500 mr-4" />
+              <h2 className="text-3xl font-bold text-gray-800">
+                Welcome to your professional story, {session.user?.name?.split(" ")[0]}!
+              </h2>
+            </div>
+            <p className="text-gray-700 text-lg font-medium mb-6 leading-relaxed">
+              Consolidate all your career data into one intelligent, conversational profile. Let visitors explore your experience naturally instead of scanning static documents.
             </p>
+            <div className="flex items-center text-lg text-gray-800 bg-white rounded-xl px-6 py-4 inline-flex border border-gray-200 shadow-sm">
+              <Database className="h-6 w-6 mr-3" />
+              <span className="font-semibold">Powered by Agentic Postgres for intelligent connections</span>
+            </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2 text-lg">
-                  <FileText className="h-5 w-5 text-blue-600" />
-                  <span>Documents</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">
-                  Upload resume, portfolio, LinkedIn data, GitHub repos, and certifications.
-                </p>
-                <Button size="sm" className="w-full">
-                  Upload Documents
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2 text-lg">
-                  <User className="h-5 w-5 text-green-600" />
-                  <span>Living Profile</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">
-                  AI creates your queryable professional knowledge base.
-                </p>
-                <Button size="sm" variant="outline" className="w-full">
-                  View Profile
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2 text-lg">
-                  <Link className="h-5 w-5 text-purple-600" />
-                  <span>Links</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">
-                  Add your social media and professional links.
-                </p>
-                <Button size="sm" variant="outline" className="w-full">
-                  Manage Links
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center space-x-2 text-lg">
-                  <MessageSquare className="h-5 w-5 text-orange-600" />
-                  <span>Testimonials</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 text-sm mb-3">
-                  Collect and showcase testimonials from colleagues.
-                </p>
-                <Button size="sm" variant="outline" className="w-full">
-                  Add Testimonials
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No recent activity yet.</p>
-                <p className="text-gray-400 text-sm">
-                  Start by uploading your first document or updating your profile.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Professional Profile Preview */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Intelligent Profile</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <div className="bg-gray-100 rounded-lg p-8 mb-4">
-                  <p className="text-gray-500 mb-2">Your intelligent profile is not yet active.</p>
-                  <p className="text-gray-400 text-sm">
-                    Upload documents and complete your profile to become discoverable through AI-powered search.
+          {/* Data Sources - Quick Actions */}
+          <div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-8">Consolidate Your Career Data</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center space-x-3 text-xl">
+                    <FileText className="h-7 w-7 text-orange-600" />
+                    <span className="font-semibold text-gray-800">Resumes & CVs</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 font-medium text-sm mb-4">
+                    Upload your resume and portfolio documents for AI processing.
                   </p>
+                  <Button size="sm" className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold">
+                    Upload Documents
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center space-x-3 text-xl">
+                    <Github className="h-7 w-7 text-gray-800" />
+                    <span className="font-semibold text-gray-800">GitHub & Projects</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 font-medium text-sm mb-4">
+                    Connect your GitHub repos and project documentation.
+                  </p>
+                  <Button size="sm" variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
+                    Connect GitHub
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center space-x-3 text-xl">
+                    <Linkedin className="h-7 w-7 text-yellow-600" />
+                    <span className="font-semibold text-gray-800">LinkedIn Profile</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 font-medium text-sm mb-4">
+                    Import your LinkedIn experience and connections.
+                  </p>
+                  <Button size="sm" variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
+                    Connect LinkedIn
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center space-x-3 text-xl">
+                    <Users className="h-7 w-7 text-amber-600" />
+                    <span className="font-semibold text-gray-800">Testimonials</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 font-medium text-sm mb-4">
+                    Collect verified testimonials from colleagues and clients.
+                  </p>
+                  <Button size="sm" variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
+                    Manage Testimonials
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Conversational Profile Preview */}
+          <Card className="border border-gray-200 bg-white shadow-xl">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-3 text-2xl">
+                <MessageSquare className="h-8 w-8 text-amber-600" />
+                <span className="font-bold text-gray-800">Your Conversational Profile</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-12">
+                <div className="bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100 border border-amber-200 rounded-2xl p-12 mb-8 shadow-lg">
+                  <BrainCircuit className="h-16 w-16 text-amber-600 mx-auto mb-6" />
+                  <p className="text-gray-800 mb-4 font-bold text-xl">Your conversational profile is ready to be built!</p>
+                  <p className="text-gray-700 text-lg mb-8 font-medium leading-relaxed">
+                    Once you add your data, visitors can explore your experience through natural conversation instead of scanning static profiles.
+                  </p>
+                  <div className="bg-white rounded-xl p-6 text-left max-w-lg mx-auto border border-gray-200 shadow-sm">
+                    <p className="text-sm text-gray-600 mb-2 font-medium">Example visitor question:</p>
+                    <p className="text-gray-800 font-semibold text-lg">&ldquo;What experience does {session.user?.name?.split(" ")[0]} have with React?&rdquo;</p>
+                  </div>
                 </div>
-                <Button>
-                  Activate My Profile
+                <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-xl px-10 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                  <Sparkles className="mr-3 h-6 w-6" />
+                  Start Building Your Story
                 </Button>
               </div>
             </CardContent>
           </Card>
+
+          {/* Sharing & Analytics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="border border-gray-200 bg-white shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-3 text-gray-800 text-xl">
+                  <Link className="h-7 w-7 text-yellow-600" />
+                  <span className="font-bold">Share Your Profile</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 font-medium text-sm mb-6">
+                  Get a custom URL to share your conversational profile instead of multiple scattered links.
+                </p>
+                <div className="bg-yellow-100 rounded-xl p-4 text-lg text-gray-800 font-semibold mb-6 border border-yellow-300">
+                  smartfolio.com/{session.user?.email?.split("@")[0]}
+                </div>
+                <Button variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
+                  Customize Your URL
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border border-gray-200 bg-white shadow-xl">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-3 text-gray-800 text-xl">
+                  <Database className="h-7 w-7 text-orange-600" />
+                  <span className="font-bold">Smart Insights</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 font-medium text-sm mb-6">
+                  See how visitors explore your experience and what they&apos;re most interested in.
+                </p>
+                <div className="text-center py-6">
+                  <p className="text-gray-600 font-medium">Analytics available after profile activation</p>
+                </div>
+                <Button variant="outline" className="w-full border border-gray-400 text-gray-600 font-medium" disabled>
+                  View Analytics
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>

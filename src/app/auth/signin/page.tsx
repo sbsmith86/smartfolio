@@ -51,26 +51,26 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4">
+      <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#00FF88] to-emerald-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
             Welcome Back
           </h1>
-          <p className="mt-2 text-gray-400">
-            Sign in to your SmartFolio account
+          <p className="mt-4 text-gray-700 font-medium text-lg">
+            Continue building your professional story
           </p>
         </div>
 
-        <Card className="border-gray-800 bg-black/50 backdrop-blur-sm shadow-2xl">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-white">
-              Sign In
+        <Card className="border border-gray-200 bg-white shadow-xl">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-3xl text-center text-gray-800 font-bold">
+              Access Your SmartFolio
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {error && (
-              <div className="flex items-center space-x-2 rounded-md border border-red-700 bg-red-900/20 p-3 text-red-400">
+              <div className="flex items-center space-x-2 rounded-md border border-red-200 bg-red-50 p-3 text-red-700">
                 <AlertCircle className="h-4 w-4" />
                 <span className="text-sm">{error}</span>
               </div>
@@ -78,7 +78,7 @@ export default function SignIn() {
 
             <form onSubmit={handleEmailSignIn} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">
+                <Label htmlFor="email" className="text-gray-700">
                   Email
                 </Label>
                 <Input
@@ -88,12 +88,12 @@ export default function SignIn() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-gray-900/50 border-gray-700 text-white placeholder-gray-500 focus:border-[#00FF88] focus:ring-[#00FF88]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">
+                <Label htmlFor="password" className="text-gray-700">
                   Password
                 </Label>
                 <Input
@@ -103,14 +103,14 @@ export default function SignIn() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-gray-900/50 border-gray-700 text-white placeholder-gray-500 focus:border-[#00FF88] focus:ring-[#00FF88]"
+                  className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-[#00FF88] to-emerald-500 hover:from-[#00FF88]/90 hover:to-emerald-500/90 text-black font-semibold shadow-lg shadow-[#00FF88]/25 hover:shadow-[#00FF88]/40 transition-all duration-300"
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-lg shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transform hover:scale-105 transition-all duration-300"
               >
                 {loading ? (
                   <>
@@ -125,17 +125,17 @@ export default function SignIn() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-700" />
+                <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-black px-2 text-gray-400">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">Or continue with</span>
               </div>
             </div>
 
             <Button
               onClick={handleGoogleSignIn}
               variant="outline"
-              className="w-full border-gray-700 bg-transparent text-white hover:bg-gray-800 hover:border-gray-600 transition-all duration-300"
+              className="w-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium text-lg transition-all duration-300"
             >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                 <path
@@ -158,13 +158,13 @@ export default function SignIn() {
               Continue with Google
             </Button>
 
-            <div className="text-center text-sm text-gray-400">
+            <div className="text-center text-lg text-gray-700">
               Don&apos;t have an account?{" "}
               <Link
                 href="/auth/signup"
-                className="text-[#00FF88] hover:text-emerald-400 font-medium transition-colors duration-200"
+                className="text-amber-600 hover:text-orange-600 font-semibold transition-colors duration-200"
               >
-                Sign up here
+                Create your story
               </Link>
             </div>
           </CardContent>

@@ -2,59 +2,82 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, FileText, User, Zap, Shield } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  FileText, Github, Linkedin, MessageSquare, Zap, Database,
+  ArrowRight, CheckCircle, Sparkles, BrainCircuit, Users
+} from "lucide-react";
 
 export default function Home() {
   const { status } = useSession();
   const router = useRouter();
+  const [currentExample, setCurrentExample] = useState(0);
+
+  const conversationExamples = [
+    "Tell me about Sarah's experience with distributed systems",
+    "What machine learning projects has John worked on?",
+    "How did Maria lead her team through the product redesign?",
+    "What frameworks does Alex prefer for backend development?"
+  ];
 
   useEffect(() => {
-    // If user is authenticated, redirect to dashboard
     if (status === "authenticated") {
       router.push("/dashboard");
     }
   }, [status, router]);
 
-  // Show loading state while checking authentication
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentExample((prev) => (prev + 1) % conversationExamples.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [conversationExamples.length]);
+
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your professional story...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
       {/* Header */}
-      <header className="bg-black/50 backdrop-blur-sm border-b border-gray-800">
+      <header className="bg-white/90 backdrop-blur-md border-b border-amber-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <FileText className="h-8 w-8 text-green-400" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <BrainCircuit className="h-6 w-6 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-pulse border-2 border-white"></div>
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-green-400 to-purple-500 bg-clip-text text-transparent">
-                SmartFolio
-              </h1>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  SmartFolio
+                </h1>
+                <p className="text-xs text-gray-600">Powered by Agentic Postgres</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/auth/signin">
-                <Button variant="ghost" className="text-gray-300 hover:text-green-400 hover:bg-gray-800/50">
+                <Button variant="ghost" className="text-gray-800 hover:text-amber-700 font-medium">
                   Sign In
                 </Button>
               </Link>
               <Link href="/auth/signup">
-                <Button className="bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-black font-semibold shadow-lg shadow-green-400/25">
-                  Get Started
+                <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/25 font-semibold">
+                  Create Your Story
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
             </div>
@@ -63,163 +86,238 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center space-y-12">
-          <div className="space-y-6">
-            <div className="relative">
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-tight">
-                The Intelligence-First
-                <span className="block bg-gradient-to-r from-green-400 via-purple-500 to-orange-400 bg-clip-text text-transparent animate-pulse">
-                  Professional Platform
-                </span>
-              </h1>
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-green-400 to-purple-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
-            </div>
-            <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Transform your career documents into intelligent, conversational experiences.
-              Employers skip the endless scrolling and simply ask:
-              <span className="text-green-400 font-semibold">&ldquo;Who has the skills I need?&rdquo;</span>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-16">
+          <Badge className="mb-8 bg-yellow-100 text-amber-800 border-yellow-200 shadow-sm">
+            <Sparkles className="h-4 w-4 mr-2 text-yellow-500" />
+            Your Complete Professional Story, Conversationally
+          </Badge>
+
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-8 leading-tight tracking-tight">
+            Stop Scattering Your
+            <span className="block bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+              Career Story
+            </span>
+          </h1>
+
+          <div className="max-w-4xl mx-auto mb-12">
+            <p className="text-xl text-gray-700 mb-8 leading-relaxed font-medium">
+              Upload your resume, connect GitHub & LinkedIn, add project docs and testimonials.
+            </p>
+            <p className="text-2xl text-gray-700 font-semibold leading-relaxed">
+              SmartFolio creates one intelligent profile where people can explore your professional
+              journey through natural conversation.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
             <Link href="/auth/signup">
-              <Button size="lg" className="text-lg px-10 py-4 bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-black font-bold shadow-2xl shadow-green-400/25 transform hover:scale-105 transition-all duration-200">
-                Make Your Experience Discoverable
-                <ArrowRight className="ml-3 h-6 w-6" />
+              <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-4 text-lg font-semibold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-200">
+                <FileText className="mr-3 h-5 w-5" />
+                Create Your SmartFolio
               </Button>
             </Link>
-            <Link href="/auth/signin">
-              <Button size="lg" variant="outline" className="text-lg px-10 py-4 border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10 hover:text-purple-300 font-semibold transform hover:scale-105 transition-all duration-200">
-                Sign In
-              </Button>
-            </Link>
+            <Button size="lg" variant="outline" className="border border-gray-600 text-gray-700 hover:bg-gray-50 hover:border-gray-700 px-10 py-4 text-lg font-semibold transition-all duration-200">
+              <MessageSquare className="mr-3 h-5 w-5" />
+              See Example Conversation
+            </Button>
           </div>
-        </div>
 
-        {/* Features Section */}
-        <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="text-center bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 group">
-            <CardHeader>
-              <div className="mx-auto bg-gradient-to-br from-green-400/20 to-green-600/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Zap className="h-8 w-8 text-green-400" />
-              </div>
-              <CardTitle className="text-white text-xl font-bold">Conversational Discovery</CardTitle>
+          {/* Live Conversation Example */}
+          <Card className="max-w-3xl mx-auto border border-gray-200 bg-white shadow-xl">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-xl text-gray-800 flex items-center justify-center font-semibold">
+                <MessageSquare className="h-5 w-5 mr-3 text-amber-500" />
+                Instead of scanning static profiles, visitors ask:
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-300 leading-relaxed">
-                Employers can ask natural questions about your experience. AI understands intent beyond keywords—finding culture fits, not just skill matches.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 group">
-            <CardHeader>
-              <div className="mx-auto bg-gradient-to-br from-purple-400/20 to-purple-600/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <User className="h-8 w-8 text-purple-400" />
+              <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-6 border border-amber-200 min-h-[80px] flex items-center justify-center">
+                <p className="text-gray-800 font-medium text-xl transition-all duration-500 text-center">
+                  &ldquo;{conversationExamples[currentExample]}&rdquo;
+                </p>
               </div>
-              <CardTitle className="text-white text-xl font-bold">Intelligent Profiles</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-300 leading-relaxed">
-                Upload your resume, portfolio, and documents. AI creates a comprehensive, queryable knowledge base about your professional background.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center bg-gray-900/50 border-gray-700 backdrop-blur-sm hover:bg-gray-800/50 transition-all duration-300 group">
-            <CardHeader>
-              <div className="mx-auto bg-gradient-to-br from-orange-400/20 to-orange-600/20 w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="h-8 w-8 text-orange-400" />
-              </div>
-              <CardTitle className="text-white text-xl font-bold">Privacy Control</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-300 leading-relaxed">
-                Choose what&apos;s public, what requires permission, and what stays private. All claims are linked to source documents and references.
-              </p>
             </CardContent>
           </Card>
         </div>
+      </section>
 
-        {/* How It Works */}
-        <div className="mt-32">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-bold text-white mb-6">How It Works</h2>
-            <p className="text-xl text-gray-300">Get discovered by the right employers in three steps</p>
+      {/* Data Sources Section */}
+      <section className="bg-white py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-6">
+              Unify All Your Professional Data
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-medium">
+              SmartFolio intelligently connects information from all your sources into one conversational experience
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="text-center group">
-              <div className="bg-gradient-to-r from-green-400 to-green-500 text-black w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-green-400/25 group-hover:scale-110 transition-transform duration-300">
-                1
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Upload Everything</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Resume, portfolio, LinkedIn data, GitHub repos, recommendations, and certifications.
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="bg-gradient-to-r from-purple-400 to-purple-500 text-white w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-purple-400/25 group-hover:scale-110 transition-transform duration-300">
-                2
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">AI Creates Your Living Profile</h3>
-              <p className="text-gray-300 leading-relaxed">
-                AI parses, structures, and enriches your professional data into a queryable knowledge base.
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-black w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl font-black shadow-lg shadow-orange-400/25 group-hover:scale-110 transition-transform duration-300">
-                3
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Get Discovered</h3>
-              <p className="text-gray-300 leading-relaxed">
-                Employers find you through natural language search and explore your experience conversationally.
-              </p>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+            {[
+              { icon: FileText, label: "Resumes & CVs", color: "bg-orange-100 text-orange-700 border-orange-200" },
+              { icon: Github, label: "GitHub Repos", color: "bg-gray-100 text-gray-800 border-gray-300" },
+              { icon: Linkedin, label: "LinkedIn Profile", color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+              { icon: Users, label: "Testimonials", color: "bg-amber-100 text-amber-700 border-amber-200" }
+            ].map((source, index) => (
+              <Card key={index} className="text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-200 hover:border-amber-300">
+                <CardContent className="pt-8 pb-6">
+                  <div className={`w-16 h-16 ${source.color} rounded-2xl flex items-center justify-center mx-auto mb-4 border shadow-sm`}>
+                    <source.icon className="h-8 w-8" />
+                  </div>
+                  <p className="font-semibold text-gray-800 text-lg">{source.label}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+
+          {/* Agentic Postgres Highlight */}
+          <Card className="bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100 border border-amber-200 shadow-xl">
+            <CardContent className="p-12">
+              <div className="flex items-center justify-center mb-8">
+                <Database className="h-8 w-8 text-gray-700 mr-4" />
+                <h3 className="text-3xl font-bold text-gray-800">Powered by Agentic Postgres</h3>
+                <Zap className="h-6 w-6 text-yellow-500 ml-4" />
+              </div>
+              <p className="text-center text-gray-700 text-xl mb-10 max-w-4xl mx-auto font-medium leading-relaxed">
+                Tiger MCP enables direct AI-to-database communication, creating intelligent connections
+                between your projects, skills, and experiences for contextually perfect responses.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="bg-white rounded-2xl p-6 mb-4 border border-gray-200 shadow-md">
+                    <BrainCircuit className="h-12 w-12 text-amber-600 mx-auto" />
+                  </div>
+                  <p className="font-semibold text-gray-800 text-lg">Smart Connections</p>
+                  <p className="text-gray-600 font-medium">AI understands relationships in your data</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white rounded-2xl p-6 mb-4 border border-gray-200 shadow-md">
+                    <Zap className="h-12 w-12 text-yellow-500 mx-auto" />
+                  </div>
+                  <p className="font-semibold text-gray-800 text-lg">Instant Responses</p>
+                  <p className="text-gray-600 font-medium">Sub-second query processing</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white rounded-2xl p-6 mb-4 border border-gray-200 shadow-md">
+                    <Sparkles className="h-12 w-12 text-orange-500 mx-auto" />
+                  </div>
+                  <p className="font-semibold text-gray-800 text-lg">Contextual Intelligence</p>
+                  <p className="text-gray-600 font-medium">Responses adapt to visitor interest</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+      </section>
 
-        {/* CTA Section */}
-        <div className="mt-32 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-purple-500/10 rounded-3xl blur-xl"></div>
-          <div className="relative bg-gradient-to-r from-gray-900 to-black border border-gray-700 rounded-3xl p-16 text-center overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-r from-green-400 to-purple-500 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-                Ready to Be <span className="bg-gradient-to-r from-green-400 to-purple-500 bg-clip-text text-transparent">Discovered?</span>
+      {/* Benefits Section */}
+      <section className="py-24 bg-gradient-to-br from-amber-50 via-white to-orange-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <h2 className="text-4xl font-bold text-gray-800 mb-8 leading-tight">
+                Your Professional Story,
+                <span className="block bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  Intelligently Connected
+                </span>
               </h2>
-              <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Join professionals who are getting found by the right employers through intelligent discovery.
-              </p>
-              <Link href="/auth/signup">
-                <Button size="lg" className="text-xl px-12 py-6 bg-gradient-to-r from-green-400 to-purple-500 hover:from-green-500 hover:to-purple-600 text-black font-black shadow-2xl shadow-green-400/25 transform hover:scale-105 transition-all duration-300">
-                  Make Your Experience Speak for Itself
-                  <ArrowRight className="ml-3 h-6 w-6" />
-                </Button>
-              </Link>
+              <div className="space-y-6">
+                {[
+                  "Stop updating profiles across multiple platforms",
+                  "Let visitors explore your experience conversationally",
+                  "AI connects your projects, skills, and achievements",
+                  "Share one link instead of scattered information",
+                  "Get insights on how people discover your expertise"
+                ].map((benefit, index) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <CheckCircle className="h-6 w-6 text-yellow-500 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 font-medium text-lg">{benefit}</p>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            <Card className="bg-white border border-gray-200 shadow-xl">
+              <CardContent className="p-8">
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-3 text-sm">
+                    <div className="w-4 h-4 bg-yellow-400 rounded-full animate-pulse"></div>
+                    <span className="text-gray-700 font-medium">Visitor exploring your profile</span>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-6 border border-amber-200">
+                    <div className="space-y-4">
+                      <div className="flex justify-end">
+                        <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-2xl rounded-br-sm max-w-xs font-medium">
+                          What experience does Sarah have with React?
+                        </div>
+                      </div>
+                      <div className="flex justify-start">
+                        <div className="bg-white px-6 py-3 rounded-2xl rounded-bl-sm max-w-sm border border-gray-200 shadow-sm">
+                          <p className="text-gray-700 font-medium">
+                            Sarah has extensive React experience! She built the frontend for EcoTrack
+                            (2023) using React 18 with TypeScript, led the migration of LegalFlow&apos;s
+                            interface from Vue to React (2022), and contributed to several open-source
+                            React components. Would you like details about any specific project?
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-gray-700 font-medium flex items-center justify-center">
+                      <Sparkles className="h-5 w-5 mr-2 text-yellow-500" />
+                      Powered by intelligent data connections
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-gray-900 py-24">
+        <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-5xl font-bold text-white mb-8 leading-tight">
+            Ready to Create Your
+            <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+              Conversational Profile?
+            </span>
+          </h2>
+          <p className="text-2xl text-gray-300 mb-12 max-w-3xl mx-auto font-medium leading-relaxed">
+            Join professionals who are making their career stories more discoverable and engaging
+            through intelligent conversation.
+          </p>
+          <Link href="/auth/signup">
+            <Button size="lg" className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 px-12 py-6 text-xl font-semibold shadow-xl shadow-yellow-400/25 hover:shadow-yellow-400/40 transform hover:scale-105 transition-all duration-300">
+              <FileText className="mr-3 h-7 w-7" />
+              Start Building Your SmartFolio
+              <ArrowRight className="ml-3 h-7 w-7" />
+            </Button>
+          </Link>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-gray-800 py-12 mt-20">
+      <footer className="bg-white border-t border-gray-200 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="relative">
-                <FileText className="h-8 w-8 text-green-400" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-4 mb-6 md:mb-0">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <BrainCircuit className="h-7 w-7 text-white" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-green-400 to-purple-500 bg-clip-text text-transparent">
-                SmartFolio
-              </span>
+              <div>
+                <p className="font-bold text-2xl text-gray-800">SmartFolio</p>
+                <p className="text-sm text-gray-600 font-medium">Powered by Agentic Postgres</p>
+              </div>
             </div>
-            <p className="text-gray-500">
-              © 2025 SmartFolio. All rights reserved.
+            <p className="text-gray-700 font-medium text-lg">
+              © 2025 SmartFolio. Your professional story, intelligently connected.
             </p>
           </div>
         </div>
