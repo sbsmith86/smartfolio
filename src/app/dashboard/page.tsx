@@ -96,7 +96,10 @@ export default function Dashboard() {
           <div>
             <h3 className="text-2xl font-bold text-gray-800 mb-8">Consolidate Your Career Data</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+              <Card
+                className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white"
+                onClick={() => router.push('/dashboard/documents')}
+              >
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center space-x-3 text-xl">
                     <FileText className="h-7 w-7 text-orange-600" />
@@ -107,7 +110,14 @@ export default function Dashboard() {
                   <p className="text-gray-700 font-medium text-sm mb-4">
                     Upload your resume and portfolio documents for AI processing.
                   </p>
-                  <Button size="sm" className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold">
+                  <Button
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/dashboard/documents');
+                    }}
+                  >
                     Upload Documents
                   </Button>
                 </CardContent>
@@ -187,7 +197,10 @@ export default function Dashboard() {
                     <p className="text-gray-800 font-semibold text-lg">&ldquo;What experience does {session.user?.name?.split(" ")[0]} have with React?&rdquo;</p>
                   </div>
                 </div>
-                <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-xl px-10 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                <Button
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold text-xl px-10 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  onClick={() => router.push('/dashboard/documents')}
+                >
                   <Sparkles className="mr-3 h-6 w-6" />
                   Start Building Your Story
                 </Button>
