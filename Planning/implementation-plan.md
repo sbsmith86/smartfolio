@@ -13,8 +13,8 @@ This implementation plan follows **Option 2: Document-Powered Smart Profiles (8-
 **Core Conversational Features:**
 - **Multi-Source Data Integration**: Unified ingestion from resumes, GitHub, LinkedIn, project docs, and testimonials
 - **Intelligent Knowledge Graph**: AI connects relationships between projects, skills, experiences, and achievements
-- **Natural Conversation Interface**: Visitors can ask questions about your career and get contextual, detailed responses
-- **Adaptive Responses**: AI tailors explanations based on what visitors are trying to understand about your background
+- **Natural Conversation Interface**: Visitors can ask questions about your career and get contextual, detailed responses via SkillScout
+- **Adaptive Responses**: SkillScout tailors explanations based on what visitors are trying to understand about your background, prioritizing project examples over resume content
 
 **Key Technical Features:**
 - Email/password + Google OAuth authentication
@@ -22,8 +22,8 @@ This implementation plan follows **Option 2: Document-Powered Smart Profiles (8-
 - GitHub/LinkedIn integration for automatic profile data sync
 - Project documentation upload and processing
 - Testimonial management system with verification requests
-- Public chat interface for conversational career exploration
-- Vector embeddings for intelligent context matching and response generation
+- Public chat interface with SkillScout AI for conversational career exploration
+- Vector embeddings for intelligent context matching and response generation, with project work prioritized over resume content
 
 ---
 
@@ -929,7 +929,7 @@ Create a **warm, professional, and empowering** user experience that makes candi
 
 ## 2.1 Document Upload & Processing
 
-## Task 6: Implement file upload with document processing
+## Task 5: Implement file upload with document processing
 
 **Status:** Blocked on Task 4
 
@@ -1325,12 +1325,12 @@ export async function processResumeWithAI(text: string) {
 
 ---
 
-## Task 7: Create profile management interface
+## Task 6: Create profile management interface
 
-**Status:** Blocked on Task 6
+**Status:** Blocked on Task 5
 
 **Dependencies:**
-- Task 6: Document upload system
+- Task 5: Document upload system
 
 **Deliverables:**
 - Profile editing form with all user fields
@@ -1570,12 +1570,12 @@ export default function ProfilePage() {
 
 ## 2.2 Links & Testimonials
 
-## Task 8: Implement LinkedIn/GitHub URL management
+## Task 7: Implement LinkedIn/GitHub URL management
 
-**Status:** Blocked on Task 7
+**Status:** Blocked on Task 6
 
 **Dependencies:**
-- Task 7: Profile management interface
+- Task 6: Profile management interface
 
 **Deliverables:**
 - Links management interface
@@ -1591,12 +1591,12 @@ export default function ProfilePage() {
 
 ---
 
-## Task 9: Create testimonial management system
+## Task 8: Create testimonial management system
 
-**Status:** Blocked on Task 8
+**Status:** Blocked on Task 7
 
 **Dependencies:**
-- Task 8: Links management
+- Task 7: Links management
 
 **Deliverables:**
 - Testimonial creation and editing interface
@@ -1621,12 +1621,12 @@ export default function ProfilePage() {
 
 ## 3.1 Intent Recognition & Vector Embeddings
 
-## Task 10: Implement intent-based vector embeddings and search
+## Task 9: Implement intent-based vector embeddings and search
 
-**Status:** Blocked on Task 9
+**Status:** Blocked on Task 8
 
 **Dependencies:**
-- Task 9: Testimonial system
+- Task 8: Testimonial system
 
 **Deliverables:**
 - Intent classification system for employer queries
@@ -1727,12 +1727,12 @@ export async function generateIntentAdaptiveResponse(
 
 ## 3.2 Intent-Aware Chat Interface
 
-## Task 11: Create intent-aware public profile pages with adaptive chat interface
+## Task 10: Create intent-aware public profile pages with adaptive chat interface
 
-**Status:** Blocked on Task 10
+**Status:** Blocked on Task 9
 
 **Dependencies:**
-- Task 10: Intent-based vector embeddings system
+- Task 9: Intent-based vector embeddings system
 
 **Deliverables:**
 - Intent-adaptive public profile page layout
@@ -1741,12 +1741,12 @@ export async function generateIntentAdaptiveResponse(
 - Anonymous visitor support with intent tracking
 - Progressive intent learning and optimization
 
-**Intent-Aware Chat Features:**
-- **Query Intent Analysis**: Every employer question is analyzed for hiring intent and context
-- **Adaptive Information Prioritization**: Profile information dynamically reorders based on detected intent
-- **Progressive Disclosure**: Follow-up questions reveal deeper, more relevant information
-- **Intent Learning**: System learns from successful interactions to improve future matching
-- **Context Preservation**: Maintains intent context throughout the conversation session
+**SkillScout AI Features:**
+- **Query Intent Analysis**: SkillScout analyzes every employer question for hiring intent and technical context
+- **Project-First Prioritization**: SkillScout weighs project examples and GitHub contributions higher than resume content for technical assessments
+- **Skills-to-Role Matching**: SkillScout specializes in connecting real technical abilities to specific job requirements
+- **Progressive Technical Disclosure**: Follow-up questions reveal deeper project details and technical problem-solving approaches
+- **Context Preservation**: SkillScout maintains technical context throughout the conversation session to provide increasingly relevant insights
 
 ---
 
@@ -2298,12 +2298,12 @@ export async function POST(request: NextRequest) {
 
 ## 4.1 Testing & Quality Assurance
 
-## Task 12: Write comprehensive tests including intent-based validation
+## Task 11: Write comprehensive tests including intent-based validation
 
-**Status:** Blocked on Task 11
+**Status:** Blocked on Task 10
 
 **Dependencies:**
-- Task 11: Intent-aware chat interface
+- Task 10: Intent-aware chat interface
 
 **Deliverables:**
 - Unit tests for all core functionality including intent recognition
@@ -2351,12 +2351,12 @@ describe('Intent Recognition System', () => {
 
 ## 4.2 Deployment & Launch
 
-## Task 13: Deploy to production
+## Task 12: Deploy to production
 
-**Status:** Blocked on Task 12
+**Status:** Blocked on Task 11
 
 **Dependencies:**
-- Task 12: Testing suite
+- Task 11: Testing suite
 
 **Deliverables:**
 - Production deployment on Vercel/Railway
@@ -2372,12 +2372,12 @@ describe('Intent Recognition System', () => {
 
 ---
 
-## Task 14: Performance optimization and monitoring
+## Task 13: Performance optimization and monitoring
 
-**Status:** Blocked on Task 13
+**Status:** Blocked on Task 12
 
 **Dependencies:**
-- Task 13: Production deployment
+- Task 12: Production deployment
 
 **Deliverables:**
 - Performance monitoring setup
@@ -2396,7 +2396,7 @@ describe('Intent Recognition System', () => {
 # Success Metrics & Launch Criteria
 
 ## Technical Requirements
-- [ ] All 14 tasks completed successfully
+- [ ] All 13 tasks completed successfully
 - [ ] Test coverage above 90% for core functionality including intent recognition
 - [ ] Performance benchmarks met (including <2s intent analysis)
 - [ ] Security review passed
