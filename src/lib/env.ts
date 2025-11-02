@@ -14,8 +14,8 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1, 'GOOGLE_CLIENT_ID is required'),
   GOOGLE_CLIENT_SECRET: z.string().min(1, 'GOOGLE_CLIENT_SECRET is required'),
 
-  // OpenAI
-  OPENAI_API_KEY: z.string().min(1, 'OPENAI_API_KEY is required'),
+  // Phase 2: OpenAI will be added in Tasks 6-7 with Tiger MCP
+  // OPENAI_API_KEY: z.string().min(1, 'OPENAI_API_KEY is required'),
 });
 
 export type Env = z.infer<typeof envSchema>;
