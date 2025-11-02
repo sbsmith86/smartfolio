@@ -1,10 +1,12 @@
-"use client";
+'use client';
 
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Upload, Loader2, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { Upload, Loader2, CheckCircle, AlertCircle, X, Eye, Info } from 'lucide-react';
 
 interface UploadedDocument {
   id: string;
@@ -20,6 +22,8 @@ interface DocumentUploadProps {
 }
 
 export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [uploading, setUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -113,6 +117,15 @@ export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps
   return (
     <Card className="w-full">
       <CardContent className="p-6">
+        {/* AI Accuracy Notice */}
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 flex items-start gap-2">
+          <Info className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-800">
+            <strong>AI-powered extraction:</strong> Our AI extracts your professional data with high accuracy, but results may vary slightly.
+            You&apos;ll be able to review and edit everything after processing.
+          </p>
+        </div>
+
         {!uploadedFile && !error ? (
           <div
             {...getRootProps()}
@@ -163,6 +176,28 @@ export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps
                   <p className="text-xs text-gray-400 mt-1">
                     {(uploadedFile.fileSize / 1024).toFixed(2)} KB • Ready for search
                   </p>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                  <div className="flex items-start gap-2 mb-3">
+                    <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-blue-800 font-medium">
+                      Please review the AI-extracted data
+                    </p>
+                  </div>
+                  <p className="text-xs text-blue-700 mb-3">
+                    AI extraction may vary slightly between uploads. Review your profile to ensure all skills, experiences, and education are accurate.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      const userId = session?.user?.id || 'me';
+                      router.push(`/profile/${userId}`);
+                    }}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    size="sm"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Review & Edit Profile
+                  </Button>
                 </div>
               </>
             ) : (

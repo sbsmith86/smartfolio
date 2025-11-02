@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, User, FileText, Link, MessageSquare, LogOut, BrainCircuit, Database, Sparkles, Github, Linkedin, Users } from "lucide-react";
+import { Loader2, User, FileText, Link, MessageSquare, LogOut, BrainCircuit, Database, Sparkles, Github, Linkedin, Users, Eye } from "lucide-react";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -16,6 +16,11 @@ export default function Dashboard() {
       router.push("/auth/signin");
     }
   }, [status, router]);
+
+  // Helper to get profile URL - uses ID as fallback if username not set
+  const getProfileUrl = () => {
+    return `/profile/${session?.user?.id || 'me'}`;
+  };
 
   if (status === "loading") {
     return (
@@ -94,7 +99,16 @@ export default function Dashboard() {
 
           {/* Data Sources - Quick Actions */}
           <div>
-            <h3 className="text-2xl font-bold text-gray-800 mb-8">Consolidate Your Career Data</h3>
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold text-gray-800">Consolidate Your Career Data</h3>
+              <Button
+                onClick={() => router.push(getProfileUrl())}
+                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                View My Profile
+              </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <Card
                 className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white"

@@ -59,9 +59,9 @@ SmartFolio transforms scattered professional data into unified, conversational e
 |-------|-------|--------|-----------------|
 | **Phase 1: Foundation** | 5 tasks | ✅ 100% Complete (5/5) | ❌ No AI in Phase 1 |
 | **Phase 2: MCP & AI** | 2 tasks | ⏳ 50% Complete (1/2) | 🎯 **CRITICAL - DO THIS NEXT** |
-| **Phase 3: Data Integration** | 5 tasks | ❌ 0% Complete (0/5) | ✅ Will be AI-first from day one |
+| **Phase 3: Data Integration** | 6 tasks | ❌ 0% Complete (0/6) | ✅ Will be AI-first from day one |
 | **Phase 4: Interface & Deploy** | 3 tasks | ❌ 0% Complete (0/3) | ✅ Uses existing infrastructure |
-| **TOTAL** | **15 tasks** | **40% Complete (6/15)** | **🎯 Task 7 unlocks everything** |
+| **TOTAL** | **16 tasks** | **38% Complete (6/16)** | **🎯 Task 7 unlocks everything** |
 
 **Key Status Notes:**
 - **Phase 1 is COMPLETE**: All foundation work (auth, database, document upload) done with zero AI
@@ -454,10 +454,132 @@ Generate vector embeddings for all professional content AND implement AI-powered
 # Phase 3: Data Integration & Knowledge Graph ❌ NOT STARTED
 
 **Target Completion:** Week 8
-**Current Status:** 0% Complete (0 of 5 tasks done)
+**Current Status:** 0% Complete (0 of 6 tasks done)
 **Last Update:** November 2, 2025
 
 This phase integrates external data sources (GitHub, LinkedIn) and builds the intelligent knowledge graph. **Because MCP is already set up (Tasks 6-7), every piece of data imported becomes immediately conversationally accessible** - no refactoring needed later.
+
+---
+
+## Task 7.5: Create user settings page with profile controls ❌ NOT STARTED
+
+**Status:** ❌ Not Started
+
+**Target Completion:** Week 5
+
+**Overview:**
+Build a comprehensive user settings page that allows users to control their profile visibility, manage account settings, and configure experience calculation preferences. This enables users to customize how their professional data is presented and calculated.
+
+**Dependencies:**
+- Task 1: Next.js setup
+- Task 2: Database schema (User model)
+- Task 3: Authentication (session management)
+- Profile page implementation (already complete)
+
+**Implementation Requirements:**
+
+1. **Settings Page Route**
+   - Create `/dashboard/settings/page.tsx`
+   - Protected route requiring authentication
+   - Tab-based navigation for different setting categories
+
+2. **Profile Settings Tab**
+   - **Public Profile Toggle**: Enable/disable public profile visibility
+   - **Username**: Set custom username for shareable URL (e.g., `/profile/sarah-martinez`)
+   - **Career Start Date**: Optional field to define when professional career began
+     - Helps calculate accurate "years in industry" vs "years of documented experience"
+     - Useful for addressing resume gaps (e.g., graduated 2008 but first listed job is 2015)
+   - **Profile Picture**: Upload custom image or use OAuth provider image
+   - **Bio**: Multi-line text area for professional summary
+   - **Location**: Current location/city
+
+3. **Experience Calculation Settings**
+   - **Metric Display Preference**:
+     - "Sum of positions" (default): Shows total time across listed jobs
+     - "Career span": Shows time since career start date
+     - "Both": Shows both metrics with labels
+   - **Career Start Date**: Calendar picker (YYYY-MM format)
+   - **Auto-detect from GitHub**: Checkbox to use earliest commit date as career start
+   - **Info tooltip**: Explains difference between metrics with example
+
+4. **Privacy Settings Tab**
+   - Profile visibility (public/private/authenticated users only)
+   - Document visibility controls (which document types to show on public profile)
+   - Testimonial visibility (require approval before showing)
+   - Skills visibility (show/hide specific skill categories)
+
+5. **Account Settings Tab**
+   - Email (display only, managed by OAuth provider)
+   - Connected accounts (GitHub, LinkedIn) with disconnect option
+   - Export data (download all profile data as JSON)
+   - Delete account (with confirmation modal)
+
+6. **Database Updates**
+   - Add fields to User model:
+     ```prisma
+     model User {
+       // ... existing fields
+       username              String?   @unique
+       careerStartDate       DateTime?
+       experienceMetricPreference String? @default("sum_of_positions") // "sum_of_positions" | "career_span" | "both"
+       autoDetectCareerStart Boolean?  @default(false)
+       publicProfileEnabled  Boolean   @default(true)
+     }
+     ```
+
+7. **API Endpoints**
+   - `PATCH /api/settings/profile` - Update profile settings
+   - `PATCH /api/settings/privacy` - Update privacy settings
+   - `GET /api/settings` - Fetch current settings
+   - `POST /api/settings/username/check` - Check username availability
+
+8. **Experience Calculation Updates**
+   - Update `/api/profile/[username]/route.ts` to use user's metric preference
+   - If `careerStartDate` is set and preference is "career_span" or "both":
+     ```typescript
+     const careerSpanYears = calculateCareerSpan(user.careerStartDate, new Date());
+     const sumOfExperienceYears = calculateYearsOfExperience(experiences);
+
+     stats: {
+       experienceYears: user.experienceMetricPreference === 'career_span'
+         ? careerSpanYears
+         : sumOfExperienceYears,
+       careerSpanYears: user.experienceMetricPreference === 'both' ? careerSpanYears : undefined,
+       sumOfExperienceYears: user.experienceMetricPreference === 'both' ? sumOfExperienceYears : undefined,
+     }
+     ```
+
+9. **Conversational AI Enhancement**
+   - When visitor asks "How many years of experience?", AI provides context-aware response:
+   - Example (with career start date):
+     ```
+     "Shae has 8.5 years of documented professional experience across 3 roles,
+      with a career spanning 17 years since 2008. GitHub contributions date back to 2010."
+     ```
+   - Example (without career start date):
+     ```
+     "Shae has 8.5 years of documented experience across 3 positions in the resume."
+     ```
+
+**Success Criteria:**
+- [ ] Settings page accessible from dashboard with clean UI
+- [ ] Users can set custom username for shareable profile URLs
+- [ ] Users can define career start date to address resume gaps
+- [ ] Experience metric preference persists and displays correctly on profile
+- [ ] Profile visibility toggle works (public/private)
+- [ ] Username availability check prevents duplicates
+- [ ] Form validation ensures data integrity (valid dates, unique usernames)
+- [ ] Changes save successfully with success/error notifications
+- [ ] Profile page respects user's metric preference
+- [ ] Conversational AI uses enhanced experience data for complete responses
+
+**UI Components:**
+- Tabs for different settings categories
+- Form inputs with validation
+- Toggle switches for boolean settings
+- Calendar picker for dates
+- Save/Cancel buttons with loading states
+- Success/error toast notifications
 
 ---
 
