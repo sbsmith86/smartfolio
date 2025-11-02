@@ -1,59 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { writeFile, mkdir, rm } from 'fs/promises';
 import { join } from 'path';
-
-// Mock environment variables before importing modules
-vi.mock('../env', () => ({
-  env: {
-    NODE_ENV: 'test',
-    DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
-    NEXTAUTH_SECRET: 'test-secret-key-for-testing-purposes-only',
-    NEXTAUTH_URL: 'http://localhost:3000',
-    GOOGLE_CLIENT_ID: 'test-google-client-id',
-    GOOGLE_CLIENT_SECRET: 'test-google-client-secret',
-    OPENAI_API_KEY: 'test-openai-api-key',
-  },
-}));
-
-// Mock OpenAI to avoid real API calls in tests
-vi.mock('openai', () => {
-  return {
-    default: class OpenAI {
-      chat = {
-        completions: {
-          create: vi.fn().mockResolvedValue({
-            choices: [{
-              message: {
-                content: JSON.stringify({
-                  personalInfo: {
-                    name: 'Test User',
-                    email: 'test@example.com',
-                  },
-                  summary: 'Test summary',
-                  skills: ['JavaScript', 'TypeScript'],
-                  experience: [],
-                  education: []
-                })
-              }
-            }]
-          })
-        }
-      };
-      embeddings = {
-        create: vi.fn().mockResolvedValue({
-          data: [{ embedding: Array(1536).fill(0.1) }]
-        })
-      };
-    }
-  };
-});
-
-// Import after mocks are set up
-const { extractText } = await import('../documentProcessor');
+import { extractText } from '../documentProcessor';
 
 const testDir = join(process.cwd(), 'test-uploads-integration');
 
-describe('Document Processor Integration Tests', () => {
+describe('Document Processor Integration Tests - Phase 1 (Text Extraction Only)', () => {
   beforeAll(async () => {
     await mkdir(testDir, { recursive: true });
   });
@@ -91,13 +43,14 @@ describe('Document Processor Integration Tests', () => {
         // The extraction might fail due to invalid PDF structure, but that's ok
         // We're testing that the worker configuration doesn't throw a type error
         expect(true).toBe(true);
-      } catch (error: any) {
+      } catch (error) {
         // The error should NOT be about workerSrc type
-        expect(error.message).not.toContain('Invalid `workerSrc` type');
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        expect(errorMessage).not.toContain('Invalid `workerSrc` type');
 
         // It's ok if it fails for other reasons (like invalid PDF structure)
         // We're specifically testing that workerSrc is configured correctly
-        console.log('Expected error (not workerSrc type error):', error.message);
+        console.log('Expected error (not workerSrc type error):', errorMessage);
       } finally {
         await rm(testPdfPath, { force: true });
       }
@@ -116,25 +69,17 @@ describe('Document Processor Integration Tests', () => {
 
       try {
         await extractText(testPdfPath, 'application/pdf');
-      } catch (error: any) {
+      } catch (error) {
         // Should not throw type error about workerSrc
-        expect(error.message).not.toMatch(/Invalid.*workerSrc.*type/i);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        expect(errorMessage).not.toMatch(/Invalid.*workerSrc.*type/i);
       } finally {
         await rm(testPdfPath, { force: true });
       }
     });
   });
 
-  describe('Real-world file handling', () => {
-    it.skip('should process a real PDF file (requires sample file)', async () => {
-      // To run this test, place a real PDF at test-uploads-integration/sample.pdf
-      const realPdfPath = join(testDir, 'sample.pdf');
-
-      const text = await extractText(realPdfPath, 'application/pdf');
-
-      expect(text).toBeTruthy();
-      expect(typeof text).toBe('string');
-      expect(text.length).toBeGreaterThan(0);
-    });
+  afterAll(async () => {
+    await rm(testDir, { recursive: true, force: true });
   });
 });

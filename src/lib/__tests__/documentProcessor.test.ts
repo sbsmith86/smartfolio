@@ -1,72 +1,11 @@
-import { describe, it, expect, beforeAll, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { writeFile, mkdir, rm } from 'fs/promises';
 import { join } from 'path';
-
-// Mock environment variables before importing modules
-vi.mock('../env', () => ({
-  env: {
-    NODE_ENV: 'test',
-    DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
-    NEXTAUTH_SECRET: 'test-secret-key-for-testing-purposes-only',
-    NEXTAUTH_URL: 'http://localhost:3000',
-    GOOGLE_CLIENT_ID: 'test-google-client-id',
-    GOOGLE_CLIENT_SECRET: 'test-google-client-secret',
-    OPENAI_API_KEY: 'test-openai-api-key',
-  },
-}));
-
-// Mock OpenAI to avoid real API calls in tests
-vi.mock('openai', () => {
-  return {
-    default: class OpenAI {
-      chat = {
-        completions: {
-          create: vi.fn().mockResolvedValue({
-            choices: [{
-              message: {
-                content: JSON.stringify({
-                  personalInfo: {
-                    name: 'John Doe',
-                    email: 'john@example.com',
-                    phone: '555-0100',
-                    location: 'San Francisco, CA'
-                  },
-                  summary: 'Software engineer with 5 years experience',
-                  skills: ['JavaScript', 'TypeScript', 'React', 'Node.js'],
-                  experience: [{
-                    company: 'Tech Corp',
-                    position: 'Senior Developer',
-                    startDate: '2020-01',
-                    endDate: 'Present',
-                    description: 'Developed web applications'
-                  }],
-                  education: [{
-                    institution: 'University of Test',
-                    degree: 'Bachelor of Science',
-                    field: 'Computer Science',
-                    graduationDate: '2019'
-                  }]
-                })
-              }
-            }]
-          })
-        }
-      };
-      embeddings = {
-        create: vi.fn().mockResolvedValue({
-          data: [{ embedding: Array(1536).fill(0.1) }]
-        })
-      };
-    }
-  };
-});
-
-// Import after mocks are set up
-const { extractText } = await import('../documentProcessor');
+import { extractText } from '../documentProcessor';
 
 const testDir = join(process.cwd(), 'test-uploads');
 
-describe('Document Processor', () => {
+describe('Document Processor - Phase 1 (Text Extraction Only, No AI)', () => {
   beforeAll(async () => {
     // Create test directory
     await mkdir(testDir, { recursive: true });
@@ -129,19 +68,6 @@ describe('Document Processor', () => {
 
       // Clean up
       await rm(testDocxPath, { force: true });
-    });
-  });
-
-  // Integration tests would require actual PDF/DOCX files
-  describe('Integration tests (requires real files)', () => {
-    it.skip('should extract text from real PDF file', async () => {
-      // This test is skipped by default
-      // To run it, you'd need to place a real PDF file in the test directory
-      const realPdfPath = join(testDir, 'sample-resume.pdf');
-      const text = await extractText(realPdfPath, 'application/pdf');
-
-      expect(text).toBeTruthy();
-      expect(text.length).toBeGreaterThan(0);
     });
   });
 
