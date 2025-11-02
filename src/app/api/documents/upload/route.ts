@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { extractText } from '@/lib/documentProcessor';
+import { handleParseResume } from '@/lib/mcp/handlers/ingestion';
 
 export async function POST(request: NextRequest) {
   try {
@@ -83,6 +84,45 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Automatically parse resume to create embeddings (background process)
+    // Don't await - let it run in background so user gets immediate response
+    if (documentType === 'resume' || !documentType) {
+      handleParseResume(
+        {
+          userId: session.user.id,
+          documentId: document.id,
+        },
+        {
+          id: `upload-${document.id}`,
+          userId: session.user.id,
+          createdAt: new Date(),
+          lastActivity: new Date(),
+          context: new Map(),
+        }
+      )
+        .then((result) => {
+          // Mark document as processed and save summary
+          return prisma.userDocument.update({
+            where: { id: document.id },
+            data: {
+              processed: true,
+              processingError: null,
+              processingSummary: result.summary,
+            },
+          });
+        })
+        .catch((error) => {          // Save the error so user can see it
+          const errorMessage = error instanceof Error ? error.message : 'Processing failed';
+          return prisma.userDocument.update({
+            where: { id: document.id },
+            data: {
+              processed: false,
+              processingError: errorMessage
+            },
+          });
+        });
+    }
+
     return NextResponse.json({
       success: true,
       document: {
@@ -102,7 +142,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -123,6 +163,8 @@ export async function GET(request: NextRequest) {
         fileSize: true,
         mimeType: true,
         processed: true,
+        processingError: true,
+        processingSummary: true,
         createdAt: true,
       },
     });

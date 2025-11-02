@@ -1,25 +1,27 @@
 # SmartFolio Implementation Plan - Intelligence-First Professional Platform
 
 **Target Completion:** December 15, 2025
-**Current Status:** Foundation Mostly Complete, Tiger MCP Integration Required (4 of 15 tasks done)
+**Current Status:** Foundation Mostly Complete, MCP Integration Required (5 of 15 tasks done)
 **Last Updated:** November 2, 2025
 
 ---
 
 ## Overview
 
-This implementation plan builds **SmartFolio: The Intelligence-First Professional Platform** - a conversational career profile system powered by Tiger MCP and Agentic Postgres. The platform consolidates professional data from resumes, GitHub, LinkedIn, project documentation, and testimonials into one intelligent knowledge base that visitors can explore through natural conversation.
+This implementation plan builds **SmartFolio: The Intelligence-First Professional Platform** - a conversational career profile system powered by Model Context Protocol (MCP) and Agentic Postgres architecture. The platform consolidates professional data from resumes, GitHub, LinkedIn, project documentation, and testimonials into one intelligent knowledge base that visitors can explore through natural conversation.
 
 **Core Value Proposition:**
 SmartFolio transforms scattered professional data into unified, conversational experiences. Instead of static profiles across multiple platforms, professionals get one intelligent hub where visitors can naturally explore their career story through AI-powered conversations grounded in verified documents and achievements.
 
-**Powered by Agentic Postgres:**
-- **Tiger MCP**: Direct AI-to-database communication for contextual, intelligent responses
-- **pg_text + pgvector**: Hybrid search finds the most relevant career experiences for any question
+**Powered by Agentic Postgres (TigerData Architecture):**
+- **Model Context Protocol (MCP)**: AI agents both structure incoming data AND query existing data using Anthropic's official SDK
+- **pgvector + pg_trgm**: Hybrid search finds the most relevant career experiences for any question
 - **Fast Forks**: Isolated conversation sessions ensure personalized, contextual visitor interactions
 - **Fluid Storage**: Professional data automatically enhances conversational intelligence as it grows
+- **AI Data Structuring**: Unstructured uploads (resumes, GitHub, LinkedIn) → Structured database records via AI agents
 
 **Key Platform Features:**
+- **AI-Powered Data Ingestion**: Unstructured uploads (PDFs, GitHub, LinkedIn) → Structured database records via AI agents
 - Multi-source data integration (resumes, GitHub, LinkedIn, projects, testimonials, certifications, portfolios)
 - AI-powered knowledge graph connecting projects, skills, experiences, and achievements
 - Natural conversational interface for visitors to explore professional history
@@ -27,23 +29,46 @@ SmartFolio transforms scattered professional data into unified, conversational e
 - Privacy controls for public/private/permission-based content
 - Verified testimonials with request/approval workflow
 
+**Dual AI Architecture (Agentic Postgres):**
+
+1. **Data Ingestion Flow** - AI agents WRITE to database:
+   ```
+   Unstructured Upload → MCP AI Agent → Structured Database Records
+
+   Examples:
+   - Resume PDF → Extract Experience, Education, Skills tables
+   - GitHub Repo → Create Project, Skills, auto-link to Experiences
+   - LinkedIn Profile → Standardize titles, detect skill overlaps
+   ```
+
+2. **Conversational Flow** - AI agents READ from database:
+   ```
+   Visitor Question → MCP AI Agent → Query Database → Natural Response
+
+   Examples:
+   - "What Python projects?" → Vector search + SQL → "3 projects: ..."
+   - "Where did they work?" → Query Experiences → "TechCorp 2020-2023..."
+   - "What skills?" → Hybrid search → "Python, React, PostgreSQL..."
+   ```
+
 ---
 
 # Implementation Status Summary
 
-| Phase | Tasks | Status | Tiger MCP Integration |
-|-------|-------|--------|-----------------------|
+| Phase | Tasks | Status | MCP Integration |
+|-------|-------|--------|-----------------|
 | **Phase 1: Foundation** | 5 tasks | ✅ 100% Complete (5/5) | ❌ No AI in Phase 1 |
-| **Phase 2: Tiger MCP** | 2 tasks | ❌ 0% Complete (0/2) | 🎯 **CRITICAL - DO THIS NEXT** |
+| **Phase 2: MCP & AI** | 2 tasks | ⏳ 50% Complete (1/2) | 🎯 **CRITICAL - DO THIS NEXT** |
 | **Phase 3: Data Integration** | 5 tasks | ❌ 0% Complete (0/5) | ✅ Will be AI-first from day one |
 | **Phase 4: Interface & Deploy** | 3 tasks | ❌ 0% Complete (0/3) | ✅ Uses existing infrastructure |
-| **TOTAL** | **15 tasks** | **33% Complete (5/15)** | **🎯 Tasks 6-7 unlock everything** |
+| **TOTAL** | **15 tasks** | **40% Complete (6/15)** | **🎯 Task 7 unlocks everything** |
 
 **Key Status Notes:**
 - **Phase 1 is COMPLETE**: All foundation work (auth, database, document upload) done with zero AI
-- **Tasks 6-7 (Tiger MCP) are the IMMEDIATE PRIORITY** - they enable all subsequent AI features
+- **Task 6 is PARTIALLY COMPLETE**: PostgreSQL extensions enabled (pgvector v0.8.1, pg_trgm v1.6), MCP server implementation pending
+- **Task 7 (Embeddings) is the IMMEDIATE PRIORITY** - enables all subsequent AI features
 - Text extraction (pdf-parse, mammoth) is not AI - it's just parsing libraries
-- All data integration tasks (8-11) will be AI-enabled from the start because Tiger MCP is set up first
+- All data integration tasks (8-11) will be AI-enabled from the start because MCP is set up first
 
 ---
 
@@ -78,7 +103,7 @@ This phase establishes the core application infrastructure with **zero AI integr
 - ✅ Environment validation passes
 - ✅ Database connection established
 
-**Note:** No AI libraries installed in Phase 1. OpenAI SDK and Tiger MCP client will be added in Phase 2.
+**Note:** No AI libraries installed in Phase 1. OpenAI SDK and Model Context Protocol SDK will be added in Phase 2.
 
 ---
 
@@ -110,7 +135,7 @@ This phase establishes the core application infrastructure with **zero AI integr
 - ✅ Prisma client generates successfully
 - ✅ Can query database from Next.js
 
-**Note:** Phase 1 uses standard Prisma ORM. Tiger MCP integration, pgvector extension, and Fast Forks configuration happen in Phase 2.
+**Note:** Phase 1 uses standard Prisma ORM. MCP integration, pgvector extension, and Fast Forks configuration happen in Phase 2.
 
 ---
 
@@ -226,39 +251,54 @@ This task provides full document upload and text extraction using standard docum
 
 **What Phase 2 Will Add:**
 Task 7 will add AI processing on top of this foundation:
-- Generate vector embeddings from the extracted text
-- Enable conversational search across uploaded documents
+- **AI-Powered Data Structuring**: Parse resume text → Extract structured experience, education, skills
+- **Vector Embeddings**: Generate embeddings from extracted text for semantic search
+- **Conversational Search**: Enable natural language queries across uploaded documents
 - Store embeddings in KnowledgeEmbeddings table
 
 **Key Insight:**
-Text extraction ≠ AI. Libraries like pdf-parse and mammoth just parse file formats and return plain text. This is complete foundation work. AI comes later when we want to make that text *searchable and conversational*.
-
----
-
-# Phase 2: Tiger MCP Foundation ❌ NOT STARTED
+Text extraction ≠ AI. Libraries like pdf-parse and mammoth just parse file formats and return plain text. **AI comes in Phase 2** when we use MCP agents to:
+1. **Structure** that text into database records (Experience, Education, Skills)
+2. **Search** that text conversationally via embeddings
+Update the implementation plan to reflect using @modelcontextprotocol/sdk instead of fictional @tigerdata packages?
+# Phase 2: Model Context Protocol & AI Foundation ⏳ IN PROGRESS
 
 **Target Completion:** Week 5
-**Current Status:** 0% Complete (0 of 2 tasks done)
+**Current Status:** 50% Complete (1 of 2 tasks done)
 **Last Update:** November 2, 2025
 
-This phase establishes the Tiger MCP infrastructure that powers SmartFolio's intelligence-first architecture. By setting up AI-to-database communication early, all subsequent data integration (GitHub, LinkedIn, portfolios) can immediately leverage conversational AI capabilities instead of building "dumb storage" that gets upgraded later.
+This phase establishes the Model Context Protocol (MCP) infrastructure that powers SmartFolio's intelligence-first architecture. By setting up AI-to-database communication early, all subsequent data integration (GitHub, LinkedIn, portfolios) can immediately leverage **dual AI capabilities**:
 
-**Why Tiger MCP First:**
-- Enables AI-first development from the start
-- Every piece of data added becomes immediately conversationally accessible
+1. **Data Ingestion**: AI agents transform unstructured uploads into structured database records
+2. **Conversational Access**: AI agents query structured data to answer natural language questions
+
+This avoids building "dumb storage" that needs refactoring later - every data source becomes immediately both structured AND conversationally accessible.
+
+**Why MCP First:**
+- **Enables AI-first development** from the start for both ingestion and queries
+- **Every upload gets structured automatically** - resumes become Experience/Education/Skills records
+- **Every data point becomes conversationally accessible** immediately after structuring
 - Avoids refactoring traditional data storage to support AI later
-- Aligns with "Powered by Agentic Postgres" vision from day one
+- Aligns with TigerData's "Agentic Postgres" architectural vision
+- Uses official Anthropic MCP SDK with PostgreSQL optimized for AI agents
 
 ---
 
-## Task 6: Set up Tiger MCP server and pgvector + pg_text extensions ❌ NOT STARTED
+## Task 6: Set up MCP server with pgvector + pg_trgm extensions ✅ PARTIALLY COMPLETE
 
-**Status:** ❌ Not Started
+**Status:** ✅ Extensions Enabled, ⏳ MCP Server Implementation Pending
 
 **Target Completion:** Week 4
 
 **Overview:**
-Set up the Tiger MCP server infrastructure and enable PostgreSQL extensions (pgvector, pg_text) that power SmartFolio's conversational intelligence. This is the foundation that enables direct AI-to-database communication.
+Set up Model Context Protocol (MCP) server infrastructure and enable PostgreSQL extensions (pgvector, pg_trgm) that power SmartFolio's **dual AI capabilities**:
+
+1. **Data Ingestion**: AI agents transform unstructured data (resumes, GitHub repos, LinkedIn profiles) into structured database records
+2. **Conversational Intelligence**: AI agents query structured data to answer visitor questions naturally
+
+This follows TigerData's "Agentic Postgres" architecture where AI agents both **write** (structure incoming data) and **read** (answer queries) from the database.
+
+**Note on "Tiger MCP":** TigerData doesn't provide custom npm packages. Instead, they use the official `@modelcontextprotocol/sdk` from Anthropic with PostgreSQL optimized for AI agents. "Tiger MCP" refers to their architectural pattern, not specific packages.
 
 **Dependencies:**
 - Task 2: Database schema
@@ -266,43 +306,78 @@ Set up the Tiger MCP server infrastructure and enable PostgreSQL extensions (pgv
 
 **Implementation Requirements:**
 
-1. **Enable PostgreSQL Extensions**
+1. **Enable PostgreSQL Extensions** ✅ COMPLETE
 ```sql
 -- Enable pgvector for semantic similarity search
-CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS vector;  -- ✅ v0.8.1 installed
 
 -- Enable pg_trgm for fuzzy text matching
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;  -- ✅ v1.6 installed
 ```
 
-2. **Install Tiger MCP Server**
+2. **Install MCP SDK and Dependencies**
 ```bash
-# Create MCP server directory
-mkdir -p mcp/smartfolio-server
-cd mcp/smartfolio-server
+# Install official Model Context Protocol SDK
+npm install @modelcontextprotocol/sdk
 
-# Initialize Tiger MCP project
-npm init -y
-npm install @tigerdata/mcp-server @tigerdata/postgres-adapter
+# Install OpenAI for embeddings (used in Task 7)
+npm install openai
+
+# Install PostgreSQL client for direct vector queries (optional - can use Prisma)
+npm install postgres
 ```
 
-3. **Configure Tiger MCP Server**
-   - Set up database connection
-   - Define allowed operations for AI
-   - Register semantic search tools
-   - Configure Fast Forks for session isolation
+3. **Create MCP Server Implementation**
+   - Create `src/lib/mcp/server.ts` - MCP server configuration
+   - Create `src/lib/mcp/tools.ts` - Register AI agent tools for both data ingestion and queries
+   - Create `src/lib/mcp/handlers.ts` - Handle AI-to-database requests
+   - Set up database connection using existing DATABASE_URL
 
-4. **Update Environment Variables**
-   - Add Tiger MCP credentials
-   - Configure MCP server endpoint
+   **Data Ingestion Tools (AI Writes to Database):**
+   - Parse resume PDFs → Extract structured experience, education, skills
+   - Analyze GitHub repos → Create project, skill, and experience records
+   - Process LinkedIn data → Populate experience, education, certification tables
+   - Smart entity linking → Connect related data automatically
+
+   **Conversational Query Tools (AI Reads from Database):**
+   - Vector similarity search (semantic queries)
+   - Full-text search (pg_trgm for fuzzy matching)
+   - Hybrid search combining both approaches
+   - Relationship traversal (knowledge graph queries)
+
+4. **Implement "Fast Forks" Session Isolation**
+   - Create isolated database sessions per chat visitor
+   - Use PostgreSQL transaction isolation for safety
+   - Clean up sessions after conversations end
+   - Prevent data leakage between concurrent users
+
+5. **Update Prisma Schema for pgvector**
+```prisma
+model KnowledgeEmbedding {
+  id        String   @id @default(cuid())
+  userId    String
+  entityType String
+  entityId  String
+  content   String
+  embedding Unsupported("vector(1536)")  // Changed from Float[]
+  createdAt DateTime @default(now())
+  // ... rest of schema
+}
+```
 
 **Success Criteria:**
-- [ ] pgvector extension enabled in PostgreSQL
-- [ ] pg_text extension enabled
-- [ ] Tiger MCP server installed and configured
-- [ ] Database connection established
-- [ ] Fast Forks configured for isolated sessions
-- [ ] Environment variables configured correctly
+- [x] pgvector extension enabled in PostgreSQL (v0.8.1)
+- [x] pg_trgm extension enabled in PostgreSQL (v1.6)
+- [ ] @modelcontextprotocol/sdk installed
+- [ ] MCP server implemented with dual-purpose tools (ingestion + queries)
+- [ ] **Data Ingestion**: AI can parse unstructured data → create structured records
+- [ ] **Conversational**: AI can query structured data → answer natural language questions
+- [ ] Vector similarity search working (semantic queries)
+- [ ] Full-text search (pg_trgm) working (fuzzy matching)
+- [ ] Hybrid search combining both methods
+- [ ] Fast Forks session isolation implemented
+- [ ] Prisma schema updated for vector type
+- [ ] Database migration successful
 
 ---
 
@@ -313,43 +388,66 @@ npm install @tigerdata/mcp-server @tigerdata/postgres-adapter
 **Target Completion:** Week 5
 
 **Overview:**
-Generate vector embeddings for all professional content (experiences, projects, testimonials, documents) and implement hybrid search combining semantic similarity (pgvector) with full-text search (pg_text). This enables natural language queries about any professional data.
+Generate vector embeddings for all professional content AND implement AI-powered data structuring. This task transforms SmartFolio from a "dumb storage" system into an intelligent platform that both:
+
+1. **Structures unstructured data**: AI agents parse resumes, GitHub repos, LinkedIn profiles → create structured database records
+2. **Enables conversational queries**: Hybrid search (pgvector + pg_trgm) answers natural language questions about professional data
 
 **Dependencies:**
-- Task 6: Tiger MCP infrastructure
-- OpenAI API (for embedding generation)
+- Task 6: MCP server infrastructure
+- OpenAI API (for embedding generation - already configured)
 
 **Implementation Requirements:**
 
-1. **Embedding Generation Service**
+1. **AI-Powered Data Structuring Service** (NEW - Core Agentic Postgres Feature)
+   - **Resume Parsing**: AI extracts structured data from unstructured resume text
+     - Parse job experiences → Create Experience records (company, title, dates, description)
+     - Extract education → Create Education records (institution, degree, dates)
+     - Identify skills → Create UserSkill records with proficiency levels
+     - Link experiences to skills automatically
+   - **GitHub Analysis** (used in Task 8): AI structures repository data
+     - README parsing → Extract project descriptions, tech stack
+     - Language statistics → Infer skill proficiency
+     - Commit analysis → Identify contribution patterns
+   - **LinkedIn Processing** (used in Task 9): AI validates and enhances manually entered data
+     - Standardize company names, job titles
+     - Detect skill overlaps between experiences
+     - Suggest missing connections
+
+2. **Embedding Generation Service**
    - Generate embeddings for all text content
    - Use OpenAI text-embedding-3-small model (or open-source alternative)
    - Batch processing for efficiency
 
-2. **Content Text Preparation**
+3. **Content Text Preparation**
    - Prepare rich, contextual text for embeddings
    - Include relationships and metadata
+   - Example: "Senior Software Engineer at TechCorp (2020-2023): Led team of 5 building Python/React microservices"
    - Store with proper indexing
 
-3. **Automatic Embedding Generation Hooks**
-   - Auto-generate embeddings on document upload (completes Task 5)
+4. **Automatic Embedding Generation Hooks**
+   - Auto-generate embeddings when AI structures new data (completes Task 5)
    - Auto-generate embeddings when GitHub/LinkedIn data syncs
    - Update embeddings when content changes
    - Background jobs for batch processing
 
-4. **Hybrid Search Implementation via Tiger MCP**
+5. **Hybrid Search Implementation via MCP**
    - Combine vector similarity + full-text search
    - Rank results by relevance
    - Filter by user permissions
 
 **Success Criteria:**
+- [ ] **AI Data Structuring**: Resume text → Structured Experience/Education/Skills records
+- [ ] **AI Data Structuring**: GitHub repos → Structured Project/Skill records
+- [ ] **AI Data Structuring**: Automatic relationship detection (skills ↔ experiences)
 - [ ] Embeddings generated for all user content
-- [ ] Task 5 document upload now generates embeddings automatically
+- [ ] Task 5 document upload now uses AI to structure AND embed data
 - [ ] Hybrid search implemented and tested
 - [ ] Search results are relevant and accurate
 - [ ] Performance is acceptable (sub-second queries)
 - [ ] Background jobs process new content
 - [ ] OpenAI API integration working
+- [ ] Dashboard shows AI-extracted data (not just raw text)
 
 ---
 
@@ -359,7 +457,7 @@ Generate vector embeddings for all professional content (experiences, projects, 
 **Current Status:** 0% Complete (0 of 5 tasks done)
 **Last Update:** November 2, 2025
 
-This phase integrates external data sources (GitHub, LinkedIn) and builds the intelligent knowledge graph. **Because Tiger MCP is already set up (Tasks 6-7), every piece of data imported becomes immediately conversationally accessible** - no refactoring needed later.
+This phase integrates external data sources (GitHub, LinkedIn) and builds the intelligent knowledge graph. **Because MCP is already set up (Tasks 6-7), every piece of data imported becomes immediately conversationally accessible** - no refactoring needed later.
 
 ---
 
@@ -370,11 +468,11 @@ This phase integrates external data sources (GitHub, LinkedIn) and builds the in
 **Target Completion:** Week 6
 
 **Overview:**
-Enable users to connect their GitHub accounts and automatically import repository data, README content, commit history, and project documentation. **Because Tiger MCP is already configured (Tasks 6-7), all GitHub data immediately becomes conversationally accessible with embeddings generated automatically.**
+Enable users to connect their GitHub accounts and automatically import repository data, README content, commit history, and project documentation. **Because MCP is already configured (Tasks 6-7), all GitHub data immediately becomes conversationally accessible with embeddings generated automatically.**
 
 **Dependencies:**
 - Task 5: Document upload system (for storing README content)
-- Task 6-7: Tiger MCP infrastructure (for automatic embedding generation)
+- Task 6-7: MCP infrastructure (for automatic embedding generation)
 - GitHub OAuth app registration
 - GitHub API client setup
 
@@ -393,26 +491,29 @@ Enable users to connect their GitHub accounts and automatically import repositor
 
 3. **Data Extraction**
    - Fetch user's repositories (public + private if authorized)
-   - Extract README content as project documentation
-   - Analyze language statistics and technologies
-   - Parse commit messages for contribution insights
-   - Store as UserLink + UserDocument entries
+   - **AI Agent**: Extract README content → Parse project descriptions, tech stack, purpose
+   - **AI Agent**: Analyze language statistics → Infer skill proficiency levels
+   - **AI Agent**: Parse commit messages → Identify contribution patterns and role
+   - **AI Agent**: Create structured Project records with auto-detected skills
+   - Store as UserLink + UserDocument + auto-generated Experience/Skill entries
 
 4. **Knowledge Graph Integration**
-   - Create project nodes linking to repositories
-   - Extract skills from repository languages/topics
-   - Connect projects to experiences (if dates overlap with employment)
+   - **AI Agent**: Create project nodes linking to repositories
+   - **AI Agent**: Extract skills from repository languages/topics
+   - **AI Agent**: Connect projects to experiences (if dates overlap with employment)
    - **Embeddings generate automatically via Task 7 hooks**
 
 **Success Criteria:**
 - [ ] Users can connect GitHub via OAuth
 - [ ] Repositories fetch and display in dashboard
-- [ ] README content extracts and stores as documents
-- [ ] Repository metadata (languages, stars, topics) captured
+- [ ] **AI Agent**: README content → Structured project descriptions
+- [ ] **AI Agent**: Language stats → Skill proficiency records
+- [ ] **AI Agent**: Repository metadata → Auto-categorized projects
 - [ ] UserLink record created with verification status
-- [ ] Project-skill relationships established
+- [ ] Project-skill relationships auto-detected by AI
 - [ ] **Embeddings generated automatically for all GitHub content**
-- [ ] **Repository data immediately conversationally accessible via Tiger MCP**
+- [ ] **Repository data immediately conversationally accessible via MCP**
+- [ ] Dashboard shows AI-structured data (not just raw README text)
 
 ---
 
@@ -423,11 +524,11 @@ Enable users to connect their GitHub accounts and automatically import repositor
 **Target Completion:** Week 7
 
 **Overview:**
-Allow users to import their LinkedIn profile data including experience, education, skills, and certifications. Since LinkedIn's API is restrictive, implement manual profile URL entry with manual data entry with verification. **With Tiger MCP already configured, all LinkedIn data becomes immediately searchable and conversationally accessible.**
+Allow users to import their LinkedIn profile data including experience, education, skills, and certifications. Since LinkedIn's API is restrictive, implement manual profile URL entry with manual data entry with verification. **With MCP already configured, all LinkedIn data becomes immediately searchable and conversationally accessible.**
 
 **Dependencies:**
 - Task 2: Database schema (UserLink, Experience, Education, Skills)
-- Task 6-7: Tiger MCP infrastructure (for automatic embedding generation)
+- Task 6-7: MCP infrastructure (for automatic embedding generation)
 
 **Implementation Approach:**
 
@@ -446,11 +547,13 @@ Allow users to import their LinkedIn profile data including experience, educatio
 **Success Criteria:**
 - [ ] Users can provide LinkedIn profile URL
 - [ ] Manual import interface for experiences, education, skills
+- [ ] **AI Agent**: Validate and enhance manually entered data (standardize titles, detect skill overlaps)
 - [ ] Data validates and stores in appropriate tables
 - [ ] Certification table created and functional
 - [ ] UserLink created with LinkedIn URL
 - [ ] **Embeddings automatically generated for all imported data**
-- [ ] **Data immediately conversationally accessible via Tiger MCP**
+- [ ] **Data immediately conversationally accessible via MCP**
+- [ ] AI suggests missing connections between experiences and skills
 
 ---
 
@@ -461,13 +564,13 @@ Allow users to import their LinkedIn profile data including experience, educatio
 **Target Completion:** Week 8
 
 **Overview:**
-Create an intelligent knowledge graph that connects all professional data points: projects ↔ skills ↔ experiences ↔ testimonials ↔ certifications. **With Tiger MCP already operational, the knowledge graph can be queried conversationally from day one** - no separate integration step needed.
+Create an intelligent knowledge graph that connects all professional data points: projects ↔ skills ↔ experiences ↔ testimonials ↔ certifications. **With MCP already operational, the knowledge graph can be queried conversationally from day one** - no separate integration step needed.
 
 **Dependencies:**
 - Task 8: GitHub integration
 - Task 9: LinkedIn synchronization
 - Task 5: Document upload
-- Task 6-7: Tiger MCP infrastructure (already complete)
+- Task 6-7: MCP infrastructure (already complete)
 
 **Knowledge Graph Architecture:**
 
@@ -488,7 +591,7 @@ The knowledge graph represents relationships between:
    - Link certifications to related skills → Strengthen expertise claims
 
 2. **AI-Powered Analysis**
-   - Use Tiger MCP to analyze text content and infer relationships
+   - Use MCP to analyze text content and infer relationships
    - Generate confidence scores for each connection
    - Identify missing connections and suggest to user
 
@@ -496,7 +599,7 @@ The knowledge graph represents relationships between:
    - Generate text descriptions of relationships for embeddings
    - Example: "Used Python and TensorFlow in Machine Learning Engineer role at TechCorp (2020-2023) for recommendation system project"
    - **Embeddings automatically generated via Task 7 hooks**
-   - **Immediately queryable via Tiger MCP conversational interface**
+   - **Immediately queryable via MCP conversational interface**
 
 **Success Criteria:**
 - [ ] Knowledge graph builds from all user data sources
@@ -508,7 +611,7 @@ The knowledge graph represents relationships between:
 - [ ] Graph data stored efficiently in database
 - [ ] Rich text descriptions generated for each connection
 - [ ] **Embeddings created automatically for conversational search**
-- [ ] **Knowledge graph immediately queryable via Tiger MCP**
+- [ ] **Knowledge graph immediately queryable via MCP**
 - [ ] Dashboard shows knowledge graph visualization
 
 ---
@@ -520,11 +623,11 @@ The knowledge graph represents relationships between:
 **Target Completion:** Week 8
 
 **Overview:**
-Expand document upload capabilities to support portfolio pieces (case studies, design work, articles) and professional certifications. **With Tiger MCP configured, all portfolio and certification content becomes immediately conversationally searchable.**
+Expand document upload capabilities to support portfolio pieces (case studies, design work, articles) and professional certifications. **With MCP configured, all portfolio and certification content becomes immediately conversationally searchable.**
 
 **Dependencies:**
 - Task 5: Document upload system
-- Task 6-7: Tiger MCP infrastructure (for automatic embedding generation)
+- Task 6-7: MCP infrastructure (for automatic embedding generation)
 
 **Implementation Requirements:**
 
@@ -557,7 +660,7 @@ Expand document upload capabilities to support portfolio pieces (case studies, d
 - [ ] Public profile displays portfolio and certifications
 - [ ] Verification workflow for certifications
 - [ ] **Embeddings automatically generated for all content**
-- [ ] **Portfolio and certifications immediately conversationally searchable via Tiger MCP**
+- [ ] **Portfolio and certifications immediately conversationally searchable via MCP**
 
 ---
 
@@ -567,7 +670,7 @@ Expand document upload capabilities to support portfolio pieces (case studies, d
 **Current Status:** 0% Complete (0 of 3 tasks done)
 **Last Update:** November 2, 2025
 
-This phase builds the visitor-facing conversational AI interface and deploys to production. **Because Tiger MCP was set up early (Tasks 6-7), this phase focuses purely on UI/UX and deployment, not infrastructure setup.**
+This phase builds the visitor-facing conversational AI interface and deploys to production. **Because MCP was set up early (Tasks 6-7), this phase focuses purely on UI/UX and deployment, not infrastructure setup.**
 
 ---
 
@@ -578,10 +681,10 @@ This phase builds the visitor-facing conversational AI interface and deploys to 
 **Target Completion:** Week 9
 
 **Overview:**
-Build the conversational AI interface that allows visitors to explore professional profiles through natural language. **Tiger MCP infrastructure is already operational (Tasks 6-7), so this is purely about building the chat UI and connecting to existing services.**
+Build the conversational AI interface that allows visitors to explore professional profiles through natural language. **MCP infrastructure is already operational (Tasks 6-7), so this is purely about building the chat UI and connecting to existing services.**
 
 **Dependencies:**
-- Task 6-7: Tiger MCP infrastructure (already complete at this stage)
+- Task 6-7: MCP infrastructure (already complete at this stage)
 - Task 10: Knowledge graph (provides rich contextual data for queries)
 
 **Implementation Requirements:**
@@ -592,7 +695,7 @@ Build the conversational AI interface that allows visitors to explore profession
    - Message history display
    - Loading states and error handling
 
-2. **Tiger MCP Integration**
+2. **MCP Integration**
    - Connect to MCP server
    - Send natural language queries
    - Receive structured responses
@@ -610,7 +713,7 @@ Build the conversational AI interface that allows visitors to explore profession
 
 **Success Criteria:**
 - [ ] Chat interface functional and responsive
-- [ ] Tiger MCP queries return relevant results
+- [ ] MCP queries return relevant results
 - [ ] Fast Forks isolation working correctly
 - [ ] Session management implemented
 - [ ] Intent recognition accurate
@@ -684,7 +787,7 @@ Write comprehensive tests for all features, prepare demo data, and create hackat
    - Test API endpoints
 
 2. **Integration Tests**
-   - Test Tiger MCP integration
+   - Test MCP integration
    - Test authentication flows
    - Test document processing
 
@@ -740,7 +843,7 @@ Deploy SmartFolio to production (Vercel), set up monitoring, and finalize all do
    - Update README with setup instructions
    - Write API documentation
    - Create deployment guide
-   - Document Tiger MCP configuration
+   - Document MCP configuration
 
 4. **Final Polish**
    - Performance optimization
@@ -774,22 +877,22 @@ Phase 1 (Foundation) ✅ 100% COMPLETE - NO AI
     └── depends on: Task 4
     └── Note: Uses pdf-parse/mammoth libraries, not AI
 
-Phase 2 (Tiger MCP Foundation) ❌ DO THIS NEXT - UNLOCKS ALL AI
-├── Task 6: Tiger MCP Setup ❌ 🎯 WEEK 4 PRIORITY
+Phase 2 (Model Context Protocol Foundation) ⏳ IN PROGRESS - UNLOCKS ALL AI
+├── Task 6: MCP Setup ⏳ 🎯 WEEK 4 PRIORITY (Partially Complete - Extensions Enabled)
 │   └── depends on: Task 2
-└── Task 7: Embeddings & Search ❌ 🎯 WEEK 5 PRIORITY
+└── Task 7: Embeddings & Search ❌ 🎯 WEEK 5 PRIORITY (IMMEDIATE NEXT)
     └── depends on: Task 6
     └── ✅ Adds AI processing to Task 5's uploaded documents
 
 Phase 3 (Data Integration) ❌ AI-FIRST FROM DAY ONE
 ├── Task 8: GitHub Integration ❌
-│   └── depends on: Tasks 5, 6-7 (Tiger MCP)
+│   └── depends on: Tasks 5, 6-7 (MCP)
 ├── Task 9: LinkedIn Import ❌
-│   └── depends on: Tasks 2, 6-7 (Tiger MCP)
+│   └── depends on: Tasks 2, 6-7 (MCP)
 ├── Task 10: Knowledge Graph ❌
-│   └── depends on: Tasks 8, 9, 6-7 (Tiger MCP)
+│   └── depends on: Tasks 8, 9, 6-7 (MCP)
 └── Task 11: Portfolio & Certs ❌
-    └── depends on: Tasks 5, 6-7 (Tiger MCP)
+    └── depends on: Tasks 5, 6-7 (MCP)
 
 Phase 4 (Conversational Interface & Deploy) ❌ PURE UI/UX WORK
 ├── Task 12: Conversational AI Interface ❌
@@ -806,20 +909,20 @@ Phase 4 (Conversational Interface & Deploy) ❌ PURE UI/UX WORK
 
 # Next Steps
 
-**🎯 IMMEDIATE PRIORITY (Week 4-5) - CHANGED:**
-1. **Task 6**: Set up Tiger MCP infrastructure (pgvector, pg_text, Fast Forks)
-2. **Task 7**: Implement embedding generation and hybrid search
+**🎯 IMMEDIATE PRIORITY (Week 4-5):**
+1. **Task 6 (Complete)**: Finish MCP server implementation with @modelcontextprotocol/sdk
+2. **Task 7 (Start)**: Implement embedding generation and hybrid search
    - This completes Task 5's document upload feature
    - Unlocks all subsequent data integration
 
 **Week 6-8 (AI-First Data Integration):**
 1. Task 8: GitHub integration (embeddings auto-generated)
 2. Task 9: LinkedIn synchronization (embeddings auto-generated)
-3. Task 10: Knowledge graph (queryable via Tiger MCP from day one)
+3. Task 10: Knowledge graph (queryable via MCP from day one)
 4. Task 11: Portfolio & certifications (embeddings auto-generated)
 
 **Week 9 (Conversational Interface):**
-1. Task 12: Build chat UI and connect to existing Tiger MCP infrastructure
+1. Task 12: Build chat UI and connect to existing MCP infrastructure
 
 **Week 10 (Final Sprint):**
 1. Task 13: Testimonial workflow
@@ -829,14 +932,14 @@ Phase 4 (Conversational Interface & Deploy) ❌ PURE UI/UX WORK
 **Hackathon Submission:** December 15, 2025
 
 **Why This Order Matters:**
-- Tiger MCP setup (Tasks 6-7) moved from Week 7 → Week 4
+- MCP setup (Tasks 6-7) enables AI infrastructure before data integration
 - Every piece of data added after Week 5 is AI-enabled from the start
 - No refactoring "dumb storage" into "smart storage" later
-- Aligns with "Intelligence-First Platform" vision
+- Aligns with TigerData's "Agentic Postgres" architectural vision
 - Reduces overall development time and complexity
 
 ---
 
-**Document Version:** 3.0 (Tiger MCP First Strategy)
+**Document Version:** 4.0 (MCP with Actual Packages)
 **Last Updated:** November 2, 2025
-**Status:** Reorganized to prioritize AI infrastructure before data integration
+**Status:** Using @modelcontextprotocol/sdk (official Anthropic SDK) following TigerData's Agentic Postgres architecture

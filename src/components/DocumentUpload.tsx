@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,6 +12,7 @@ interface UploadedDocument {
   documentType: string;
   fileSize: number;
   processed: boolean;
+  processingError?: string | null;
 }
 
 interface DocumentUploadProps {
@@ -22,6 +23,35 @@ export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps
   const [uploading, setUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Poll for document status after upload
+  useEffect(() => {
+    if (!uploadedFile || uploadedFile.processed || uploadedFile.processingError) {
+      return;
+    }
+
+    setIsProcessing(true);
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/documents/${uploadedFile.id}/status`);
+        if (response.ok) {
+          const data = await response.json();
+          setUploadedFile(prev => prev ? { ...prev, processed: data.processed, processingError: data.processingError } : null);
+
+          // Stop polling if processed or failed
+          if (data.processed || data.processingError) {
+            setIsProcessing(false);
+            clearInterval(pollInterval);
+          }
+        }
+      } catch (err) {
+        console.error('Error polling document status:', err);
+      }
+    }, 2000); // Poll every 2 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [uploadedFile]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -115,14 +145,38 @@ export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps
           </div>
         ) : uploadedFile && !error ? (
           <div className="text-center space-y-4">
-            <CheckCircle className="h-12 w-12 mx-auto text-green-500" />
-            <div>
-              <p className="font-medium text-green-700">Document uploaded successfully!</p>
-              <p className="text-sm text-gray-500">{uploadedFile.fileName}</p>
-              <p className="text-xs text-gray-400 mt-1">
-                {(uploadedFile.fileSize / 1024).toFixed(2)} KB
-              </p>
-            </div>
+            {uploadedFile.processingError ? (
+              <>
+                <AlertCircle className="h-12 w-12 mx-auto text-red-500" />
+                <div>
+                  <p className="font-medium text-red-700">Processing failed</p>
+                  <p className="text-sm text-gray-500">{uploadedFile.fileName}</p>
+                  <p className="text-xs text-red-600 mt-2">{uploadedFile.processingError}</p>
+                </div>
+              </>
+            ) : uploadedFile.processed ? (
+              <>
+                <CheckCircle className="h-12 w-12 mx-auto text-green-500" />
+                <div>
+                  <p className="font-medium text-green-700">Document processed successfully!</p>
+                  <p className="text-sm text-gray-500">{uploadedFile.fileName}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {(uploadedFile.fileSize / 1024).toFixed(2)} KB • Ready for search
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <Loader2 className="h-12 w-12 mx-auto text-amber-600 animate-spin" />
+                <div>
+                  <p className="font-medium text-amber-700">Processing document...</p>
+                  <p className="text-sm text-gray-500">{uploadedFile.fileName}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Extracting skills and generating embeddings...
+                  </p>
+                </div>
+              </>
+            )}
             <Button onClick={resetUpload} variant="outline" size="sm" className="mt-4">
               <X className="h-4 w-4 mr-2" />
               Upload Another

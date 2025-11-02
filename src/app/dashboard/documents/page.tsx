@@ -14,6 +14,7 @@ import {
   CheckCircle,
   Clock,
   Trash2,
+  AlertCircle,
 } from "lucide-react";
 
 interface Document {
@@ -23,6 +24,13 @@ interface Document {
   fileSize: number;
   mimeType: string;
   processed: boolean;
+  processingError?: string | null;
+  processingSummary?: {
+    experiencesCreated: number;
+    educationCreated: number;
+    skillsCreated: number;
+    embeddingsCreated: number;
+  } | null;
   createdAt: string;
 }
 
@@ -53,6 +61,23 @@ export default function DocumentsPage() {
       setLoading(false);
     }
   };
+
+  // Poll for updates if any document is still processing
+  useEffect(() => {
+    if (!documents.length) return;
+
+    const hasProcessingDocs = documents.some(
+      (doc) => !doc.processed && !doc.processingError
+    );
+
+    if (!hasProcessingDocs) return;
+
+    const pollInterval = setInterval(() => {
+      fetchDocuments();
+    }, 3000); // Poll every 3 seconds
+
+    return () => clearInterval(pollInterval);
+  }, [documents]);
 
   const handleUploadComplete = () => {
     fetchDocuments();
@@ -181,10 +206,28 @@ export default function DocumentsPage() {
                                   {doc.documentType}
                                 </span>
                               </div>
+                              {doc.processed && doc.processingSummary && (
+                                <div className="flex items-center space-x-3 mt-2 text-xs text-gray-600">
+                                  <span className="bg-blue-50 px-2 py-1 rounded">
+                                    {doc.processingSummary.experiencesCreated} experiences
+                                  </span>
+                                  <span className="bg-purple-50 px-2 py-1 rounded">
+                                    {doc.processingSummary.skillsCreated} skills
+                                  </span>
+                                  <span className="bg-green-50 px-2 py-1 rounded">
+                                    {doc.processingSummary.educationCreated} education
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center space-x-4">
-                            {doc.processed ? (
+                            {doc.processingError ? (
+                              <Badge className="bg-red-100 text-red-800 border-red-200">
+                                <AlertCircle className="h-4 w-4 mr-1" />
+                                Failed
+                              </Badge>
+                            ) : doc.processed ? (
                               <Badge className="bg-green-100 text-green-800 border-green-200">
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Processed
