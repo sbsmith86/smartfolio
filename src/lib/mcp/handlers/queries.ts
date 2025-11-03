@@ -23,8 +23,9 @@ export async function handleSemanticSearch(
     entityTypes?: string[];
     sessionId?: string;
   },
-  session: MCPSession
+  _session: MCPSession
 ) {
+  const { userId, query, limit = 10, entityTypes } = input;
   // 1. Generate query embedding
   const queryEmbedding = await generateEmbedding(query);
 
@@ -83,7 +84,11 @@ export async function handleSemanticSearch(
               where: { id: result.contentId },
             });
             break;
-          // Add more cases as needed
+          case 'skill':
+            entity = await prisma.userSkill.findUnique({
+              where: { id: result.contentId },
+            });
+            break;
         }
       }
 
@@ -111,13 +116,81 @@ export async function handleFullTextSearch(
     userId: string;
     query: string;
     limit?: number;
+    entityTypes?: string[];
     sessionId?: string;
   },
   _session: MCPSession
 ) {
-  const { userId, query } = input;
+  const { userId, query, limit = 10, entityTypes } = input;
 
-  // Use pg_trgm similarity operator (%>)
+  // Use pg_trgm similarity operator for fuzzy text matching
+  const results = await prisma.$queryRaw<
+    Array<{
+      id: string;
+      userId: string;
+      contentType: string;
+      contentId: string | null;
+      textContent: string;
+      metadata: unknown;
+      similarity: number;
+    }>
+  >`
+    SELECT
+      id,
+      "userId",
+      "contentType",
+      "contentId",
+      "textContent",
+      metadata,
+      similarity("textContent", ${query}) AS similarity
+    FROM "knowledge_embeddings"
+    WHERE "userId" = ${userId}
+      AND similarity("textContent", ${query}) > 0.1
+      ${entityTypes && entityTypes.length > 0 ? Prisma.sql`AND "contentType" = ANY(${entityTypes})` : Prisma.empty}
+    ORDER BY similarity DESC
+    LIMIT ${limit}
+  `;
+
+  // Enrich results with related entities
+  const enrichedResults = await Promise.all(
+    results.map(async (result) => {
+      let entity = null;
+
+      if (result.contentId) {
+        switch (result.contentType) {
+          case 'experience':
+            entity = await prisma.experience.findUnique({
+              where: { id: result.contentId },
+            });
+            break;
+          case 'education':
+            entity = await prisma.education.findUnique({
+              where: { id: result.contentId },
+            });
+            break;
+          case 'skill':
+            entity = await prisma.userSkill.findUnique({
+              where: { id: result.contentId },
+            });
+            break;
+        }
+      }
+
+      return {
+        ...result,
+        entity,
+        relevanceScore: result.similarity,
+      };
+    })
+  );
+
+  return {
+    success: true,
+    results: enrichedResults,
+    searchType: 'fulltext',
+    query,
+  };
+}
 
 /**
  * Hybrid search combining semantic + full-text
