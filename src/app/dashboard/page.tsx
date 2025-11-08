@@ -137,7 +137,10 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+              <Card
+                className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white"
+                onClick={() => router.push('/dashboard/import/github')}
+              >
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center space-x-3 text-xl">
                     <Github className="h-7 w-7 text-gray-800" />
@@ -148,8 +151,15 @@ export default function Dashboard() {
                   <p className="text-gray-700 font-medium text-sm mb-4">
                     Connect your GitHub repos and project documentation.
                   </p>
-                  <Button size="sm" variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
-                    Connect GitHub
+                  <Button
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-gray-800 to-gray-600 hover:from-gray-900 hover:to-gray-700 text-white font-semibold"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/dashboard/import/github');
+                    }}
+                  >
+                    Import GitHub
                   </Button>
                 </CardContent>
               </Card>

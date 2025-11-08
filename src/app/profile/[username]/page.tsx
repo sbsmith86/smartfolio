@@ -279,20 +279,25 @@ export default function ProfilePage({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Experience */}
+            {/* Professional Experience (from Resume) */}
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <Briefcase className="h-6 w-6 text-blue-600" />
-                  Work Experience
+                  <FileText className="h-6 w-6 text-blue-600" />
+                  Professional Experience
+                  <Badge variant="outline" className="ml-2 text-xs">
+                    📄 From Resume
+                  </Badge>
                 </h2>
               </div>
 
-              {experiences.length === 0 ? (
-                <p className="text-gray-500">No experience added yet</p>
+              {experiences.filter(exp => exp.company !== 'GitHub').length === 0 ? (
+                <p className="text-gray-500">No professional experience added yet</p>
               ) : (
                 <div className="space-y-6">
-                  {experiences.map((exp) => (
+                  {experiences
+                    .filter(exp => exp.company !== 'GitHub')
+                    .map((exp) => (
                     <Card key={exp.id} className="border-l-4 border-l-blue-500">
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between">
@@ -327,6 +332,71 @@ export default function ProfilePage({
                               <Edit2 className="h-4 w-4" />
                             </Button>
                           )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* GitHub Projects */}
+            <section>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <BrainCircuit className="h-6 w-6 text-purple-600" />
+                  Open Source Projects
+                  <Badge variant="outline" className="ml-2 text-xs bg-purple-50">
+                    💻 From GitHub
+                  </Badge>
+                </h2>
+              </div>
+
+              {experiences.filter(exp => exp.company === 'GitHub').length === 0 ? (
+                <Card className="bg-purple-50 border-purple-200">
+                  <CardContent className="pt-6">
+                    <p className="text-gray-600">No GitHub projects imported yet</p>
+                    {isOwnProfile && (
+                      <p className="text-sm text-gray-500 mt-2">
+                        Visit your dashboard to import projects from your GitHub profile
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {experiences
+                    .filter(exp => exp.company === 'GitHub')
+                    .map((project) => (
+                    <Card key={project.id} className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-semibold text-lg">{project.position}</h3>
+                              <Badge variant="secondary" className="text-xs">
+                                💻 GitHub
+                              </Badge>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                              <Calendar className="h-4 w-4" />
+                              {formatDate(project.startDate)}
+                              {project.endDate && ` - ${formatDate(project.endDate)}`}
+                            </div>
+                            {project.description && (
+                              <p className="mt-2 text-sm text-gray-700 line-clamp-4">{project.description}</p>
+                            )}
+                            {/* Extract GitHub URL from description if present */}
+                            <a
+                              href={`https://github.com/sbsmith86/${project.position}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 mt-3 text-sm text-purple-600 hover:text-purple-800"
+                            >
+                              View on GitHub
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
