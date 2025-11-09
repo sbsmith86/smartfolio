@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EditModal from "@/components/EditModal";
+import CandidateChat from "@/components/CandidateChat";
 import Image from "next/image";
 import {
   Loader2,
@@ -280,7 +281,7 @@ export default function ProfilePage({
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Professional Experience (from Resume) */}
-            <section>
+            <section id="experience-section">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                   <FileText className="h-6 w-6 text-blue-600" />
@@ -406,7 +407,7 @@ export default function ProfilePage({
             </section>
 
             {/* Education */}
-            <section>
+            <section id="education-section">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                   <GraduationCap className="h-6 w-6 text-green-600" />
@@ -456,7 +457,7 @@ export default function ProfilePage({
 
             {/* Testimonials */}
             {testimonials.length > 0 && (
-              <section>
+              <section id="testimonials-section">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold flex items-center gap-2">
                     <MessageSquare className="h-6 w-6 text-purple-600" />
@@ -493,8 +494,16 @@ export default function ProfilePage({
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Chat Component */}
+            <div className="h-[600px]">
+              <CandidateChat
+                userId={user.id}
+                candidateName={user.fullName}
+              />
+            </div>
+
             {/* Skills */}
-            <Card>
+            <Card id="skills-section">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-purple-600" />

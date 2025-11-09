@@ -289,9 +289,88 @@ open http://localhost:3000/profile/shae
 
 ---
 
-## Task 5: Build candidate chat UI component
+## Task 5: ~~Build candidate chat UI component~~ ✅ COMPLETE
 
-**Goal:** Chat panel component that renders open by default, connects to `/api/chat`, displays answers with citations.
+**Status:** ✅ Complete - Chat UI components created and integrated into profile page
+
+**What's Done:**
+- ✅ Created `/src/components/CandidateChat.tsx` (261 lines) - Main chat interface component
+- ✅ Created `/src/components/ChatMessage.tsx` (65 lines) - Individual message display with avatars
+- ✅ Created `/src/components/ChatCitation.tsx` (84 lines) - Clickable citations with type-based styling
+- ✅ Integrated chat into `/profile/[username]` page in sticky sidebar (600px height)
+- ✅ Chat open by default with example prompts
+- ✅ Message state management with loading/error handling
+- ✅ Auto-scroll to latest messages
+- ✅ Keyboard shortcuts (Enter to send, Shift+Enter for new line)
+- ✅ Citation click handlers scroll to relevant profile sections
+- ✅ Added section IDs: experience-section, education-section, skills-section, testimonials-section
+- ✅ Gradient styling matching dashboard theme (amber/orange)
+- ✅ Responsive textarea that grows with content
+
+**Implementation Steps:**
+1. ✅ Create `/src/components/CandidateChat.tsx`
+2. ✅ State: messages array, input text, loading state
+3. ✅ Render:
+   - Chat header: "Chat about this candidate"
+   - Message history (user questions + AI answers)
+   - Input box + submit button
+   - Example prompts (clickable)
+4. ✅ On submit:
+   - POST to `/api/chat` with `{ userId, question }`
+   - Display loading state
+   - Append answer to messages
+   - Show citations as clickable links
+5. ✅ Auto-scroll to latest message
+6. ✅ Add to profile page (open by default)
+
+**Files Created:**
+- `/src/components/CandidateChat.tsx` (261 lines)
+- `/src/components/ChatMessage.tsx` (65 lines)
+- `/src/components/ChatCitation.tsx` (84 lines)
+
+**Files Modified:**
+- `/src/app/profile/[username]/page.tsx` (added chat component in sidebar, section IDs)
+
+**Test:**
+```bash
+# 1. Start dev server
+npm run dev
+
+# 2. Open profile
+open http://localhost:3000/profile/shae
+
+# 3. Verify chat panel is visible and open by default
+
+# 4. Click example prompt or type question
+# Example: "What Python experience does this candidate have?"
+
+# 5. Verify answer appears with citations (once API is implemented)
+```
+
+**Expected Output:**
+- Chat panel visible on page load in right sidebar
+- Example prompts clickable
+- Can type and submit questions
+- Loading state shows while processing
+- Answer appears with citations (links to experiences)
+- Citations scroll to relevant sections when clicked
+
+**Acceptance Criteria:**
+- [x] Chat panel renders open by default in sticky sidebar
+- [x] Can submit questions via input or example prompts
+- [x] Loading state displays during processing
+- [x] Citations have type-based colors and icons
+- [x] Citation clicks scroll to relevant profile sections
+- [x] Auto-scrolls to latest message
+- [x] Keyboard shortcuts work (Enter/Shift+Enter)
+- [x] Responsive on mobile
+- [x] Gradient styling matches dashboard theme
+
+---
+
+## Task 6: Build chat API endpoint with retrieval
+
+**Goal:** `/api/chat` endpoint that uses hybrid search to retrieve relevant data, synthesizes answer with GPT-4o, returns grounded response with citations.
 
 **Implementation Steps:**
 1. Create `/src/components/CandidateChat.tsx`
