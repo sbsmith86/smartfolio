@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EditModal from "@/components/EditModal";
 import CandidateChat from "@/components/CandidateChat";
+import TechExplanationPanel from "@/components/TechExplanationPanel";
+import StatusBadge from "@/components/StatusBadge";
 import Image from "next/image";
 import {
   Loader2,
@@ -289,6 +291,7 @@ export default function ProfilePage({
                   <Badge variant="outline" className="ml-2 text-xs">
                     📄 From Resume
                   </Badge>
+                  <StatusBadge status="active" />
                 </h2>
               </div>
 
@@ -299,7 +302,7 @@ export default function ProfilePage({
                   {experiences
                     .filter(exp => exp.company !== 'GitHub')
                     .map((exp) => (
-                    <Card key={exp.id} className="border-l-4 border-l-blue-500">
+                    <Card key={exp.id} id={exp.id} className="border-l-4 border-l-blue-500">
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -350,6 +353,7 @@ export default function ProfilePage({
                   <Badge variant="outline" className="ml-2 text-xs bg-purple-50">
                     💻 From GitHub
                   </Badge>
+                  <StatusBadge status="demo" />
                 </h2>
               </div>
 
@@ -369,7 +373,7 @@ export default function ProfilePage({
                   {experiences
                     .filter(exp => exp.company === 'GitHub')
                     .map((project) => (
-                    <Card key={project.id} className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+                    <Card key={project.id} id={project.id} className="border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -412,6 +416,7 @@ export default function ProfilePage({
                 <h2 className="text-2xl font-bold flex items-center gap-2">
                   <GraduationCap className="h-6 w-6 text-green-600" />
                   Education
+                  <StatusBadge status="active" />
                 </h2>
               </div>
 
@@ -420,7 +425,7 @@ export default function ProfilePage({
               ) : (
                 <div className="space-y-6">
                   {education.map((edu) => (
-                    <Card key={edu.id} className="border-l-4 border-l-green-500">
+                    <Card key={edu.id} id={edu.id} className="border-l-4 border-l-green-500">
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -462,12 +467,13 @@ export default function ProfilePage({
                   <h2 className="text-2xl font-bold flex items-center gap-2">
                     <MessageSquare className="h-6 w-6 text-purple-600" />
                     Testimonials
+                    <StatusBadge status="demo" />
                   </h2>
                 </div>
 
                 <div className="space-y-6">
                   {testimonials.map((testimonial) => (
-                    <Card key={testimonial.id} className="border-l-4 border-l-purple-500">
+                    <Card key={testimonial.id} id={testimonial.id} className="border-l-4 border-l-purple-500">
                       <CardContent className="pt-6">
                         <p className="text-gray-700 italic mb-4">&ldquo;{testimonial.content}&rdquo;</p>
                         <div>
@@ -502,12 +508,16 @@ export default function ProfilePage({
               />
             </div>
 
+            {/* Technology Explanation Panel */}
+            <TechExplanationPanel />
+
             {/* Skills */}
             <Card id="skills-section">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-purple-600" />
                   Skills
+                  <StatusBadge status="active" />
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -522,7 +532,7 @@ export default function ProfilePage({
                         </h4>
                         <div className="flex flex-wrap gap-2">
                           {categorySkills.map((skill) => (
-                            <div key={skill.id} className="relative group">
+                            <div key={skill.id} id={skill.id} className="relative group">
                               <Badge variant="secondary" className="cursor-pointer">
                                 {skill.name}
                               </Badge>

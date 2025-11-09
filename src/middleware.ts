@@ -42,11 +42,13 @@ export const config = {
      * - api/register (registration endpoint)
      * - api/github (GitHub import - public for demo)
      * - api/linkedin (LinkedIn import - public for demo)
+     * - api/chat (Chat API - public for profile pages)
+     * - api/profile (Profile API - public for profile pages)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public folder
      */
-    "/((?!api/auth|api/register|api/github|api/linkedin|_next/static|_next/image|favicon.ico|public).*)",
+    "/((?!api/auth|api/register|api/github|api/linkedin|api/chat|api/profile|_next/static|_next/image|favicon.ico|public).*)",
   ],
 };

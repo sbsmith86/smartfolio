@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import ChatMessage from './ChatMessage';
+import StatusBadge from './StatusBadge';
 import { Send, Sparkles } from 'lucide-react';
 
 interface Message {
@@ -39,11 +40,21 @@ export default function CandidateChat({ userId, candidateName = "this candidate"
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-scroll to latest message
+  // Auto-scroll to latest message within chat container only
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current && messagesEndRef.current) {
+      const container = messagesContainerRef.current;
+      const element = messagesEndRef.current;
+
+      // Scroll within the chat container, not the entire page
+      container.scrollTo({
+        top: element.offsetTop,
+        behavior: 'smooth'
+      });
+    }
   }, [messages]);
 
   // Focus input on mount
@@ -122,10 +133,11 @@ export default function CandidateChat({ userId, candidateName = "this candidate"
       <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-amber-50 to-orange-50">
         <Sparkles className="w-5 h-5 text-amber-600" />
         <h3 className="font-semibold text-gray-900">Chat about {candidateName}</h3>
+        <StatusBadge status="active" />
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
         {messages.length === 0 && (
           <div className="text-center py-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 mb-4">

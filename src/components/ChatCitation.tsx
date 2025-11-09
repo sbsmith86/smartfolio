@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, GraduationCap, Briefcase, MessageSquare, Code } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 interface Citation {
   id: string;
@@ -14,65 +14,54 @@ interface ChatCitationProps {
 }
 
 export default function ChatCitation({ citation }: ChatCitationProps) {
-  const getIcon = () => {
-    switch (citation.type) {
-      case 'experience':
-        return <Briefcase className="w-3 h-3" />;
-      case 'education':
-        return <GraduationCap className="w-3 h-3" />;
-      case 'skill':
-        return <Code className="w-3 h-3" />;
-      case 'testimonial':
-        return <MessageSquare className="w-3 h-3" />;
-      default:
-        return <FileText className="w-3 h-3" />;
-    }
-  };
-
-  const getTypeLabel = () => {
-    switch (citation.type) {
-      case 'experience':
-        return 'Experience';
-      case 'education':
-        return 'Education';
-      case 'skill':
-        return 'Skill';
-      case 'testimonial':
-        return 'Testimonial';
-      default:
-        return 'Source';
-    }
-  };
-
   const getTypeColor = () => {
     switch (citation.type) {
       case 'experience':
-        return 'text-blue-600 bg-blue-50 border-blue-200';
+        return 'text-blue-700 bg-blue-50 hover:bg-blue-100 border-blue-200';
       case 'education':
-        return 'text-purple-600 bg-purple-50 border-purple-200';
+        return 'text-purple-700 bg-purple-50 hover:bg-purple-100 border-purple-200';
       case 'skill':
-        return 'text-green-600 bg-green-50 border-green-200';
+        return 'text-green-700 bg-green-50 hover:bg-green-100 border-green-200';
       case 'testimonial':
-        return 'text-amber-600 bg-amber-50 border-amber-200';
+        return 'text-amber-700 bg-amber-50 hover:bg-amber-100 border-amber-200';
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return 'text-gray-700 bg-gray-50 hover:bg-gray-100 border-gray-200';
     }
   };
 
   const handleClick = () => {
-    // Scroll to the relevant section on the page
-    const sectionMap: Record<string, string> = {
-      experience: 'experience-section',
-      education: 'education-section',
-      skill: 'skills-section',
-      testimonial: 'testimonials-section'
-    };
+    // First try to scroll to the specific item by ID
+    const element = document.getElementById(citation.id);
 
-    const sectionId = sectionMap[citation.type];
-    if (sectionId) {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (element) {
+      // Get element position relative to the page
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      // Scroll with offset to account for any fixed headers
+      const offset = 100; // Adjust this value as needed
+      window.scrollTo({
+        top: elementPosition - offset,
+        behavior: 'smooth'
+      });
+    } else {
+      // Fallback: scroll to the section if specific item not found
+      const sectionMap: Record<string, string> = {
+        experience: 'experience-section',
+        education: 'education-section',
+        skill: 'skills-section',
+        testimonial: 'testimonials-section'
+      };
+
+      const sectionId = sectionMap[citation.type];
+      if (sectionId) {
+        const sectionElement = document.getElementById(sectionId);
+        if (sectionElement) {
+          const elementPosition = sectionElement.getBoundingClientRect().top + window.scrollY;
+          const offset = 100;
+          window.scrollTo({
+            top: elementPosition - offset,
+            behavior: 'smooth'
+          });
+        }
       }
     }
   };
@@ -80,26 +69,11 @@ export default function ChatCitation({ citation }: ChatCitationProps) {
   return (
     <button
       onClick={handleClick}
-      className={`w-full text-left p-3 rounded-lg border transition-all hover:shadow-md ${getTypeColor()}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-xs font-medium transition-colors ${getTypeColor()}`}
+      title={citation.excerpt}
     >
-      <div className="flex items-start gap-2">
-        <div className="flex-shrink-0 mt-0.5">
-          {getIcon()}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-medium uppercase tracking-wide">
-              {getTypeLabel()}
-            </span>
-          </div>
-          <p className="text-sm font-medium mb-1 line-clamp-1">
-            {citation.title}
-          </p>
-          <p className="text-xs opacity-80 line-clamp-2">
-            {citation.excerpt}
-          </p>
-        </div>
-      </div>
+      <span className="truncate max-w-[200px]">{citation.title}</span>
+      <ExternalLink className="w-3 h-3 flex-shrink-0 opacity-60" />
     </button>
   );
 }

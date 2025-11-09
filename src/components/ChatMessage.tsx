@@ -51,15 +51,11 @@ export default function ChatMessage({ message }: ChatMessageProps) {
 
         {/* Citations */}
         {!isUser && message.citations && message.citations.length > 0 && (
-          <div className="mt-3 space-y-2">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-              Sources
-            </p>
-            <div className="space-y-2">
-              {message.citations.map((citation, index) => (
-                <ChatCitation key={`${citation.id}-${index}`} citation={citation} />
-              ))}
-            </div>
+          <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+            <span className="text-xs text-gray-500">Sources:</span>
+            {message.citations.map((citation, index) => (
+              <ChatCitation key={`${citation.id}-${index}`} citation={citation} />
+            ))}
           </div>
         )}
       </div>
