@@ -159,14 +159,22 @@ function calculateYearsOfExperience(experiences: Array<{ startDate: string; endD
   if (experiences.length === 0) return 0;
 
   const now = new Date();
-  let totalMonths = 0;
 
-  for (const exp of experiences) {
-    const start = new Date(exp.startDate);
-    const end = exp.endDate ? new Date(exp.endDate) : now;
-    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-    totalMonths += Math.max(0, months);
-  }
+  // Find earliest start date and latest end date (or present)
+  const startDates = experiences.map(e => new Date(e.startDate));
+  const earliestStart = new Date(Math.min(...startDates.map(d => d.getTime())));
+
+  // Latest end is either the most recent endDate, or now if any job is current
+  const hasCurrentJob = experiences.some(e => !e.endDate);
+  const latestEnd = hasCurrentJob ? now :
+    new Date(Math.max(...experiences
+      .filter(e => e.endDate)
+      .map(e => new Date(e.endDate!).getTime())
+    ));
+
+  // Calculate total months from earliest to latest
+  const totalMonths = (latestEnd.getFullYear() - earliestStart.getFullYear()) * 12 +
+                     (latestEnd.getMonth() - earliestStart.getMonth());
 
   return Math.round(totalMonths / 12 * 10) / 10; // Round to 1 decimal
 }

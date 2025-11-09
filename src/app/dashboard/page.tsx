@@ -139,6 +139,33 @@ export default function Dashboard() {
 
               <Card
                 className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white"
+                onClick={() => router.push('/dashboard/testimonials')}
+              >
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center space-x-3 text-xl">
+                    <Users className="h-7 w-7 text-green-600" />
+                    <span className="font-semibold text-gray-800">Testimonials</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 font-medium text-sm mb-4">
+                    Add recommendations and testimonials from colleagues.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/dashboard/testimonials');
+                    }}
+                  >
+                    Add Testimonial
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card
+                className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white"
                 onClick={() => router.push('/dashboard/import/github')}
               >
                 <CardHeader className="pb-4">
@@ -164,10 +191,13 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
+              <Card
+                className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white"
+                onClick={() => router.push('/dashboard/import/linkedin')}
+              >
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center space-x-3 text-xl">
-                    <Linkedin className="h-7 w-7 text-yellow-600" />
+                    <Linkedin className="h-7 w-7 text-blue-600" />
                     <span className="font-semibold text-gray-800">LinkedIn Profile</span>
                   </CardTitle>
                 </CardHeader>
@@ -175,25 +205,15 @@ export default function Dashboard() {
                   <p className="text-gray-700 font-medium text-sm mb-4">
                     Import your LinkedIn experience and connections.
                   </p>
-                  <Button size="sm" variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
-                    Connect LinkedIn
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center space-x-3 text-xl">
-                    <Users className="h-7 w-7 text-amber-600" />
-                    <span className="font-semibold text-gray-800">Testimonials</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 font-medium text-sm mb-4">
-                    Collect verified testimonials from colleagues and clients.
-                  </p>
-                  <Button size="sm" variant="outline" className="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium">
-                    Manage Testimonials
+                  <Button
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/dashboard/import/linkedin');
+                    }}
+                  >
+                    Import LinkedIn
                   </Button>
                 </CardContent>
               </Card>
