@@ -20,7 +20,7 @@ async function testSearch() {
     }
 
     const userId = embedding.userId;
-    const userName = embedding.user.name || embedding.user.email;
+    const userName = `${embedding.user.firstName} ${embedding.user.lastName}` || embedding.user.email;
     console.log(`Testing with user: ${userName} (${userId})\n`);
 
     // Mock MCP session
