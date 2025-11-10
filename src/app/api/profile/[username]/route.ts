@@ -107,10 +107,11 @@ export async function GET(
 
     // Group skills by category
     const skillsByCategory = transformedSkills.reduce((acc, skill) => {
-      if (!acc[skill.category]) {
-        acc[skill.category] = [];
+      const category = skill.category || 'Other';
+      if (!acc[category]) {
+        acc[category] = [];
       }
-      acc[skill.category].push(skill);
+      acc[category].push(skill);
       return acc;
     }, {} as Record<string, typeof transformedSkills>);
 
