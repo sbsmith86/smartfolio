@@ -65,7 +65,12 @@ interface ProfileData {
     category: string;
     proficiency?: string | null;
   }>;
-  skillsByCategory: Record<string, typeof skills>;
+  skillsByCategory: Record<string, Array<{
+    id: string;
+    name: string;
+    category: string;
+    proficiency?: string | null;
+  }>>;
   documents: Array<{
     id: string;
     fileName: string;
