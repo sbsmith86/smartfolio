@@ -98,7 +98,6 @@ export async function GET(request: NextRequest) {
       searchType: result.searchType,
       results: result.results,
       count: result.results.length,
-      weights: result.weights,
     });
   } catch (error) {
     console.error('Search API error:', error);
