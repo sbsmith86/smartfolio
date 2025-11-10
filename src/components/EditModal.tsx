@@ -34,7 +34,7 @@ interface Skill {
   id: string;
   name: string;
   category: string;
-  proficiency?: string;
+  proficiency?: string | null;
 }
 
 type EditableItem = Experience | Education | Skill;

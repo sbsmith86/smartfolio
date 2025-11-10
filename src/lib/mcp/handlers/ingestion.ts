@@ -143,7 +143,6 @@ Example schema:
         content: `Parse this resume:\n\n${document.extractedText}`,
       },
     ],
-    response_format: { type: 'json_object' },
   });
 
   const rawData = JSON.parse(completion.choices[0].message.content || '{}');

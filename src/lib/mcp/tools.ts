@@ -129,14 +129,14 @@ const toolHandlers = new Map<string, MCPTool['handler']>();
 
 export function initializeToolHandlers() {
   // Ingestion handlers
-  toolHandlers.set('parse_resume', handleParseResume);
-  toolHandlers.set('analyze_github', handleAnalyzeGitHub);
-  toolHandlers.set('process_linkedin', handleProcessLinkedIn);
+  toolHandlers.set('parse_resume', handleParseResume as MCPTool['handler']);
+  toolHandlers.set('analyze_github', handleAnalyzeGitHub as MCPTool['handler']);
+  toolHandlers.set('process_linkedin', handleProcessLinkedIn as MCPTool['handler']);
 
   // Query handlers
-  toolHandlers.set('semantic_search', handleSemanticSearch);
-  toolHandlers.set('fulltext_search', handleFullTextSearch);
-  toolHandlers.set('hybrid_search', handleHybridSearch);
+  toolHandlers.set('semantic_search', handleSemanticSearch as MCPTool['handler']);
+  toolHandlers.set('fulltext_search', handleFullTextSearch as MCPTool['handler']);
+  toolHandlers.set('hybrid_search', handleHybridSearch as MCPTool['handler']);
 }
 
 export function getToolHandler(name: string): MCPTool['handler'] | undefined {
