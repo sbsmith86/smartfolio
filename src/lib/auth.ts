@@ -121,25 +121,41 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        // For credentials provider, user object has the data we need
-        const userWithNames = user as { firstName?: string; lastName?: string };
-        if (userWithNames.firstName) {
-          token.id = user.id;
-          token.firstName = userWithNames.firstName;
-          token.lastName = userWithNames.lastName;
-          token.email = user.email!;
-        } else {
-          // For Google OAuth, fetch from database
-          const dbUser = await prisma.user.findUnique({
-            where: { email: user.email! },
-          });
+        try {
+          // For credentials provider, user object has the data we need
+          const userWithNames = user as { firstName?: string; lastName?: string };
+          if (userWithNames.firstName) {
+            token.id = user.id;
+            token.firstName = userWithNames.firstName;
+            token.lastName = userWithNames.lastName;
+            token.email = user.email!;
+          } else {
+            // For Google OAuth, fetch from database
+            const dbUser = await prisma.user.findUnique({
+              where: { email: user.email! },
+            });
 
-          if (dbUser) {
-            token.id = dbUser.id;
-            token.firstName = dbUser.firstName;
-            token.lastName = dbUser.lastName;
-            token.email = dbUser.email;
+            if (dbUser) {
+              token.id = dbUser.id;
+              token.firstName = dbUser.firstName;
+              token.lastName = dbUser.lastName;
+              token.email = dbUser.email;
+            } else {
+              console.error('User not found in database:', user.email);
+              // Set basic info from OAuth provider
+              token.id = user.id;
+              token.email = user.email!;
+              token.firstName = user.name?.split(' ')[0] || 'User';
+              token.lastName = user.name?.split(' ').slice(1).join(' ') || 'Name';
+            }
           }
+        } catch (error) {
+          console.error('JWT callback error:', error);
+          // Fallback to basic user info
+          token.id = user.id;
+          token.email = user.email!;
+          token.firstName = user.name?.split(' ')[0] || 'User';
+          token.lastName = user.name?.split(' ').slice(1).join(' ') || 'Name';
         }
       }
       return token;
