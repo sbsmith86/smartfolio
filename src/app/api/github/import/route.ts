@@ -1,6 +1,5 @@
+import { getDefaultUser } from '@/lib/getDefaultUser';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { generateEmbedding } from '@/lib/openai-utils';
 import OpenAI from 'openai';
@@ -38,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     // For MVP/demo: Allow unauthenticated imports when userId is provided
     // In production, you'd want to add API key auth or restrict this
-    const session = await getServerSession(authOptions);
+    const session = getDefaultUser();
     const targetUserId = userId || session?.user?.id;
 
     if (!targetUserId) {

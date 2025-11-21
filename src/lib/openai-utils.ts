@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
 
 export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build',
 });
+
 
 /**
  * Generate embedding vector for text using OpenAI's text-embedding-3-small

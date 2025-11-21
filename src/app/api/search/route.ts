@@ -1,6 +1,5 @@
+import { getDefaultUser } from '@/lib/getDefaultUser';
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import {
   handleSemanticSearch,
   handleFullTextSearch,
@@ -25,7 +24,7 @@ import {
 export async function GET(request: NextRequest) {
   try {
     // Authentication
-    const session = await getServerSession(authOptions);
+    const session = getDefaultUser();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

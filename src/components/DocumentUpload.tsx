@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useDefaultUser } from '@/lib/useDefaultUser';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Upload, Loader2, CheckCircle, AlertCircle, X, Eye, Info } from 'lucide-react';
@@ -23,7 +23,7 @@ interface DocumentUploadProps {
 
 export default function DocumentUpload({ onUploadComplete }: DocumentUploadProps) {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session } = useDefaultUser();
   const [uploading, setUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<UploadedDocument | null>(null);
   const [error, setError] = useState<string | null>(null);
