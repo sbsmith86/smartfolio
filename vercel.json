@@ -9,5 +9,6 @@
       "permanent": true
     }
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "alias": ["smartfolio.vercel.app"]
 }
