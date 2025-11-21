@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useDefaultUser } from "@/lib/useDefaultUser";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,7 +109,7 @@ export default function ProfilePage({
 }: {
   params: Promise<{ username: string }>;
 }) {
-  const { data: session } = useSession();
+  const { data: session } = useDefaultUser();
   const router = useRouter();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);

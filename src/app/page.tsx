@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -13,7 +12,6 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const { status } = useSession();
   const router = useRouter();
   const [currentExample, setCurrentExample] = useState(0);
 
@@ -25,28 +23,11 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
-    }
-  }, [status, router]);
-
-  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentExample((prev) => (prev + 1) % conversationExamples.length);
     }, 3000);
     return () => clearInterval(interval);
   }, [conversationExamples.length]);
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your professional story...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50">
@@ -69,14 +50,9 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/auth/signin">
-                <Button variant="ghost" className="text-gray-800 hover:text-amber-700 font-medium">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/auth/signup">
+              <Link href="/dashboard">
                 <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg shadow-amber-500/25 font-semibold">
-                  Create Your Story
+                  Go to Dashboard
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>

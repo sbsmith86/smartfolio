@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useDefaultUser } from "@/lib/useDefaultUser";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ interface ImportResult {
 }
 
 export default function LinkedInImportPage() {
-  const { data: session } = useSession();
+  const { data: session } = useDefaultUser();
   const router = useRouter();
   const [profileText, setProfileText] = useState("");
   const [loading, setLoading] = useState(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useDefaultUser } from "@/lib/useDefaultUser";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ interface TestimonialFormData {
 }
 
 export default function TestimonialsPage() {
-  const { data: session, status } = useSession();
+  const { data: session } = useDefaultUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

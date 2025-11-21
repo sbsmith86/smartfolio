@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useDefaultUser } from "@/lib/useDefaultUser";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ export default function DocumentDetailsPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { status } = useSession();
+  const { data: session } = useDefaultUser();
   const router = useRouter();
   const [document, setDocument] = useState<DocumentDetails | null>(null);
   const [loading, setLoading] = useState(true);

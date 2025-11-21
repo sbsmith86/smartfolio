@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { useDefaultUser } from "@/lib/useDefaultUser";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,7 @@ interface ImportResult {
 }
 
 export default function GitHubImportPage() {
-  const { data: session, status } = useSession();
+  const { data: session } = useDefaultUser();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);

@@ -1,44 +1,22 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, User, FileText, Link, MessageSquare, LogOut, BrainCircuit, Database, Sparkles, Github, Linkedin, Users, Eye } from "lucide-react";
+import { User, FileText, Link, MessageSquare, LogOut, BrainCircuit, Database, Sparkles, Github, Linkedin, Users, Eye } from "lucide-react";
+import { useDefaultUser } from "@/lib/useDefaultUser";
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
+  const { data: session } = useDefaultUser();
   const router = useRouter();
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/signin");
-    }
-  }, [status, router]);
 
   // Helper to get profile URL - uses ID as fallback if username not set
   const getProfileUrl = () => {
-    return `/profile/${session?.user?.id || 'me'}`;
+    return `/profile/${session?.user?.id || 'shae'}`;
   };
 
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading your dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!session) {
-    return null;
-  }
-
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" });
+    router.push("/");
   };
 
   return (
