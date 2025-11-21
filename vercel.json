@@ -1,5 +1,5 @@
 {
-  "buildCommand": "yarn build",
+  "buildCommand": "prisma generate && yarn build",
   "devCommand": "yarn dev",
   "installCommand": "yarn install",
   "redirects": [
@@ -10,5 +10,10 @@
     }
   ],
   "cleanUrls": true,
-  "alias": ["smartfolio.vercel.app"]
+  "alias": ["smartfolio.vercel.app"],
+  "functions": {
+    "app/api/**/*.ts": {
+      "includeFiles": "node_modules/.prisma/client/**"
+    }
+  }
 }
