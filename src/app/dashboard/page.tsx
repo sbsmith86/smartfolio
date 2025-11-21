@@ -3,20 +3,16 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, FileText, Link, MessageSquare, LogOut, BrainCircuit, Database, Sparkles, Github, Linkedin, Users, Eye } from "lucide-react";
+import { FileText, Link, MessageSquare, BrainCircuit, Database, Sparkles, Github, Linkedin, Users, Eye } from "lucide-react";
 import { useDefaultUser } from "@/lib/useDefaultUser";
 
 export default function Dashboard() {
   const { data: session } = useDefaultUser();
   const router = useRouter();
 
-  // Helper to get profile URL - uses ID as fallback if username not set
+  // Helper to get profile URL
   const getProfileUrl = () => {
-    return `/profile/${session?.user?.id || 'shae'}`;
-  };
-
-  const handleSignOut = async () => {
-    router.push("/");
+    return `/profile/shae`;
   };
 
   return (
@@ -40,16 +36,6 @@ export default function Dashboard() {
               </div>
               <span className="text-gray-400 text-2xl font-medium">•</span>
               <span className="text-gray-800 font-semibold text-xl">Your Professional Story</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <User className="h-5 w-5 text-gray-500" />
-                <span className="text-gray-700">{session.user?.name}</span>
-              </div>
-              <Button variant="outline" onClick={handleSignOut} className="border border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium px-6 py-2">
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
             </div>
           </div>
         </div>
