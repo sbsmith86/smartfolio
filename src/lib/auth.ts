@@ -57,47 +57,65 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      // Allow sign-in for all providers by default
+      if (!account || account.provider !== "google") {
+        return true;
+      }
+
       try {
-        if (account?.provider === "google") {
-          // Handle Google OAuth
-          console.log('Google OAuth sign in attempt:', { email: user.email, userId: user.id });
+        console.log('Google OAuth sign in attempt:', {
+          email: user.email,
+          userId: user.id,
+          profile: profile
+        });
 
-          const existingUser = await prisma.user.findUnique({
-            where: { email: user.email! },
-          });
-
-          if (!existingUser) {
-            // Create new user for Google OAuth
-            const googleProfile = profile as { given_name?: string; family_name?: string };
-            console.log('Creating new user for Google OAuth:', user.email);
-            await prisma.user.create({
-              data: {
-                email: user.email!,
-                firstName: googleProfile?.given_name || user.name?.split(' ')[0] || 'User',
-                lastName: googleProfile?.family_name || user.name?.split(' ').slice(1).join(' ') || '',
-                profilePictureUrl: user.image,
-                googleId: user.id,
-              },
-            });
-          } else if (!existingUser.googleId) {
-            // Link Google account to existing user
-            console.log('Linking Google account to existing user:', user.email);
-            await prisma.user.update({
-              where: { id: existingUser.id },
-              data: {
-                googleId: user.id,
-                profilePictureUrl: user.image || existingUser.profilePictureUrl,
-              },
-            });
-          } else {
-            console.log('Existing Google user signing in:', user.email);
-          }
+        if (!user.email) {
+          console.error('No email provided by Google');
+          return false;
         }
+
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+
+        const googleProfile = profile as { given_name?: string; family_name?: string };
+        const firstName = googleProfile?.given_name || user.name?.split(' ')[0] || 'User';
+        const lastName = googleProfile?.family_name || user.name?.split(' ').slice(1).join(' ') || 'Name';
+
+        if (!existingUser) {
+          // Create new user for Google OAuth
+          console.log('Creating new user for Google OAuth:', user.email);
+          await prisma.user.create({
+            data: {
+              email: user.email,
+              firstName,
+              lastName,
+              profilePictureUrl: user.image || null,
+              googleId: account.providerAccountId,
+            },
+          });
+          console.log('Successfully created new Google user');
+        } else if (!existingUser.googleId) {
+          // Link Google account to existing user
+          console.log('Linking Google account to existing user:', user.email);
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              googleId: account.providerAccountId,
+              profilePictureUrl: user.image || existingUser.profilePictureUrl,
+            },
+          });
+          console.log('Successfully linked Google account');
+        } else {
+          console.log('Existing Google user signing in:', user.email);
+        }
+
         return true;
       } catch (error) {
         console.error('SignIn callback error:', error);
-        // Return true to allow sign-in even if database operations fail
-        // The user will be authenticated but may need to sign in again
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        // Allow sign-in to proceed even if database operations fail
+        // This prevents being locked out if there's a temporary DB issue
         return true;
       }
     },
