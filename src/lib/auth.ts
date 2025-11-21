@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { env } from "@/lib/env";
 
 export const authOptions: NextAuthOptions = {
+  debug: process.env.NODE_ENV === 'development',
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
@@ -161,12 +162,16 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
-        session.user.email = token.email as string;
-        session.user.name = `${token.firstName} ${token.lastName}`.trim();
+      try {
+        if (token && token.id) {
+          session.user.id = token.id as string;
+          session.user.firstName = (token.firstName as string) || 'User';
+          session.user.lastName = (token.lastName as string) || 'Name';
+          session.user.email = (token.email as string) || session.user.email;
+          session.user.name = `${token.firstName || 'User'} ${token.lastName || 'Name'}`.trim();
+        }
+      } catch (error) {
+        console.error('Session callback error:', error);
       }
       return session;
     },
