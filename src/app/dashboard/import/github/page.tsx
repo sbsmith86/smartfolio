@@ -73,18 +73,7 @@ export default function GitHubImportPage() {
     }
   };
 
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-gray-600" />
-      </div>
-    );
-  }
 
-  if (status === "unauthenticated") {
-    router.push("/auth/signin");
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">

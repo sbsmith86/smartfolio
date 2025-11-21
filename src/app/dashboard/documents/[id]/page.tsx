@@ -92,13 +92,11 @@ export default function DocumentDetailsPage({
   };
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/signin");
-    } else if (status === "authenticated" && documentId) {
+    if (documentId) {
       fetchDocument();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, router, documentId]);
+  }, [documentId]);
 
   const handleDelete = async (
     type: "experience" | "education" | "skill",
@@ -125,7 +123,7 @@ export default function DocumentDetailsPage({
     }
   };
 
-  if (status === "loading" || loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin" />
