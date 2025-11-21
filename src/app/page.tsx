@@ -87,10 +87,10 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <Link href="/auth/signup">
+            <Link href="/dashboard">
               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-10 py-4 text-lg font-semibold shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-200">
                 <FileText className="mr-3 h-5 w-5" />
-                Create Your SmartFolio
+                Go to Dashboard
               </Button>
             </Link>
             <Button size="lg" variant="outline" className="border border-gray-600 text-gray-700 hover:bg-gray-50 hover:border-gray-700 px-10 py-4 text-lg font-semibold transition-all duration-200">
@@ -269,10 +269,10 @@ export default function Home() {
             Join professionals who are making their career stories more discoverable and engaging
             through intelligent conversation.
           </p>
-          <Link href="/auth/signup">
+          <Link href="/dashboard">
             <Button size="lg" className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 px-12 py-6 text-xl font-semibold shadow-xl shadow-yellow-400/25 hover:shadow-yellow-400/40 transform hover:scale-105 transition-all duration-300">
               <FileText className="mr-3 h-7 w-7" />
-              Start Building Your SmartFolio
+              Go to Dashboard
               <ArrowRight className="ml-3 h-7 w-7" />
             </Button>
           </Link>
