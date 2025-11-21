@@ -1,5 +1,13 @@
 {
   "buildCommand": "yarn build",
   "devCommand": "yarn dev",
-  "installCommand": "yarn install"
+  "installCommand": "yarn install",
+  "redirects": [
+    {
+      "source": "/auth/:path*",
+      "destination": "/dashboard",
+      "permanent": true
+    }
+  ],
+  "cleanUrls": true
 }
