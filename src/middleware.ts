@@ -21,7 +21,7 @@ export default withAuth(
 
         // Public paths that don't require authentication
         const publicPaths = ["/", "/auth/signin", "/auth/signup"];
-        
+
         // Allow public profile pages
         if (pathname.startsWith("/profile/")) {
           return true;

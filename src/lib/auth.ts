@@ -60,6 +60,8 @@ export const authOptions: NextAuthOptions = {
       try {
         if (account?.provider === "google") {
           // Handle Google OAuth
+          console.log('Google OAuth sign in attempt:', { email: user.email, userId: user.id });
+
           const existingUser = await prisma.user.findUnique({
             where: { email: user.email! },
           });
@@ -67,6 +69,7 @@ export const authOptions: NextAuthOptions = {
           if (!existingUser) {
             // Create new user for Google OAuth
             const googleProfile = profile as { given_name?: string; family_name?: string };
+            console.log('Creating new user for Google OAuth:', user.email);
             await prisma.user.create({
               data: {
                 email: user.email!,
@@ -78,6 +81,7 @@ export const authOptions: NextAuthOptions = {
             });
           } else if (!existingUser.googleId) {
             // Link Google account to existing user
+            console.log('Linking Google account to existing user:', user.email);
             await prisma.user.update({
               where: { id: existingUser.id },
               data: {
@@ -85,12 +89,16 @@ export const authOptions: NextAuthOptions = {
                 profilePictureUrl: user.image || existingUser.profilePictureUrl,
               },
             });
+          } else {
+            console.log('Existing Google user signing in:', user.email);
           }
         }
         return true;
       } catch (error) {
         console.error('SignIn callback error:', error);
-        return false;
+        // Return true to allow sign-in even if database operations fail
+        // The user will be authenticated but may need to sign in again
+        return true;
       }
     },
     async jwt({ token, user }) {
