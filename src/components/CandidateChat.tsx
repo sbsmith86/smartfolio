@@ -39,6 +39,7 @@ export default function CandidateChat({ userId, candidateName = "this candidate"
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -83,9 +84,8 @@ export default function CandidateChat({ userId, candidateName = "this candidate"
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId,
-          question: question.trim(),
-          conversationHistory: messages.slice(-4) // Last 2 exchanges for context
+          message: question.trim(),
+          sessionId
         }),
       });
 
